@@ -1,0 +1,29 @@
+{
+  "site": {
+    "eyebrow": "부산 인디 커넥트 페스티벌",
+    "subtitle": "역대 수상작 아카이브 / All-Time Award Archive",
+    "primaryColor": "#ff2d55",
+    "accentColor": "#ffd000",
+    "subColor": "#00e5ff",
+    "bgColor": "#080810",
+    "displayFont": "'Bebas Neue','Black Han Sans',sans-serif",
+    "bodyFont": "'Noto Sans KR',sans-serif",
+    "bgImage": ""
+  },
+  "categories": {
+    "grand-prix":   { "emblem": "" },
+    "jury-general": { "emblem": "" },
+    "rising-star":  { "emblem": "" },
+    "jury-rookie":  { "emblem": "" },
+    "art":          { "emblem": "" },
+    "design":       { "emblem": "" },
+    "experimental": { "emblem": "" },
+    "narrative":    { "emblem": "" },
+    "casual":       { "emblem": "" },
+    "esports":      { "emblem": "" },
+    "audio":        { "emblem": "" },
+    "social":       { "emblem": "" },
+    "action":       { "emblem": "" }
+  },
+  "sponsors": []
+}
