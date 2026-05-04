@@ -278,8 +278,10 @@ input[type="color"]{width:36px;height:36px;border:1px solid var(--border);border
 
   <!-- SAVE BAR -->
   <div class="save-bar">
+    <input type="password" id="ghTokenInput" placeholder="GitHub Token (ghp_...)"
+      style="padding:8px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font-mono);font-size:11px;width:240px;outline:none;letter-spacing:1px;">
     <button class="save-btn" id="saveBtn" onclick="saveConfig()">💾 저장 및 배포</button>
-    <a class="preview-btn" href="/bic-awards/" target="_blank">👁 사이트 미리보기</a>
+    <a class="preview-btn" href="https://leecharcoal.github.io/bic-awards/" target="_blank">👁 사이트 미리보기</a>
     <span class="save-status" id="saveStatus"></span>
   </div>
 
@@ -572,8 +574,12 @@ function collectForm() {
 async function saveConfig() {
   collectForm();
 
-  const token = prompt('GitHub Personal Access Token (ghp_...)을 입력하세요:\n\n(처음 한 번만 입력하면 세션 동안 저장됩니다)');
-  if(!token) return;
+  const tokenInput = document.getElementById('ghTokenInput');
+  const token = tokenInput ? tokenInput.value.trim() : '';
+  if(!token) {
+    alert('하단의 GitHub Token 입력란에 토큰을 먼저 입력해주세요.');
+    return;
+  }
   ghToken = token;
 
   const btn = document.getElementById('saveBtn');
@@ -583,25 +589,21 @@ async function saveConfig() {
   status.textContent = '저장 중...';
 
   try {
-    // 1. 현재 파일 SHA 가져오기
     const getRes = await fetch(
       `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${CONFIG_PATH}`,
       { headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github.v3+json' } }
     );
     const getJson = await getRes.json();
     const sha = getJson.sha;
-
-    // 2. 파일 업데이트
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(config, null, 2))));
+    const fileContent = btoa(unescape(encodeURIComponent(JSON.stringify(config, null, 2))));
     const putRes = await fetch(
       `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${CONFIG_PATH}`,
       {
         method: 'PUT',
         headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: 'Update config via admin', content, sha })
+        body: JSON.stringify({ message: 'Update config via admin', content: fileContent, sha })
       }
     );
-
     if(putRes.ok) {
       status.className = 'save-status success';
       status.textContent = '✅ 저장 완료! 1~2분 후 사이트에 반영됩니다.';
