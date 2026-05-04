@@ -258,14 +258,30 @@ function applyConfig(){
     document.getElementById('bgImage').style.backgroundImage=`url('${s.bgImage}')`;
     document.getElementById('bgOverlay').style.background=`rgba(0,0,0,${s.bgOverlay??0.6})`;
   }
-  if(siteConfig.categories){
-    categories.forEach(cat=>{
-      const emb=siteConfig.categories[cat.id]?.emblem;
-      const embR=siteConfig.categories[cat.id]?.emblemRookie;
-      if(emb)  cat.emblemImg=emb;
-      if(embR) cat.emblemImgRookie=embR;
-    });
-  }
+  // 엠블럼 — config.json 우선, 없으면 GitHub 파일명 자동 매핑
+  const BASE = 'https://leecharcoal.github.io/bic-awards/';
+  const EMBLEM_MAP = {
+    'grand-prix':   { general: 'grand-prix.png',    rookie: 'grand-prix-rookie.png' },
+    'jury-general': { general: 'jury-general.png',  rookie: 'jury-general.png' },
+    'rising-star':  { general: 'rising-star.png',   rookie: 'rising-star.png' },
+    'jury-rookie':  { general: 'jury-rookie.png',   rookie: 'jury-rookie.png' },
+    'art':          { general: 'art.png',            rookie: 'art-rookie.png' },
+    'design':       { general: 'design.png',         rookie: 'design-rookie.png' },
+    'experimental': { general: 'experimental.png',  rookie: 'experimental-rookie.png' },
+    'narrative':    { general: 'narrative.png',      rookie: 'narrative-rookie.png' },
+    'casual':       { general: 'casual.png',         rookie: 'casual-rookie.png' },
+    'esports':      { general: 'esports.png',        rookie: 'esports-rookie.png' },
+    'audio':        { general: 'audio.png',          rookie: 'audio-rookie.png' },
+    'social':       { general: 'social.png',         rookie: 'social-rookie.png' },
+    'action':       { general: 'action.png',         rookie: 'action-rookie.png' },
+  };
+  categories.forEach(cat=>{
+    const cfgEmb  = siteConfig.categories?.[cat.id]?.emblem;
+    const cfgEmbR = siteConfig.categories?.[cat.id]?.emblemRookie;
+    const mapFile = EMBLEM_MAP[cat.id];
+    cat.emblemImg        = cfgEmb  || (mapFile ? BASE + mapFile.general : '');
+    cat.emblemImgRookie  = cfgEmbR || (mapFile ? BASE + mapFile.rookie  : '');
+  });
   const sponsors=(siteConfig.sponsors||[]).filter(sp=>sp.logo&&sp.name);
   if(sponsors.length){
     document.getElementById('sponsorsBar').style.display='block';
