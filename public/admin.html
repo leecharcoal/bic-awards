@@ -66,12 +66,21 @@ input[type="color"]{width:36px;height:36px;border:1px solid var(--border);border
 .color-hex:focus{border-color:var(--accent);}
 
 /* EMBLEM GRID */
-.emblem-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+.emblem-section-label{font-family:var(--font-mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.emblem-section-label.general{color:var(--accent2);}
+.emblem-section-label.rookie{color:var(--accent3);}
+.emblem-section-label:first-child{margin-top:0;}
+.emblem-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
 .emblem-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center;position:relative;}
+.emblem-item.rookie-item{border-color:rgba(0,229,255,.15);}
 .emblem-preview{width:64px;height:64px;border-radius:50%;border:2px solid var(--border);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--surface3);overflow:hidden;cursor:pointer;transition:all .2s;}
+.emblem-item.rookie-item .emblem-preview{border-color:rgba(0,229,255,.3);}
 .emblem-preview:hover{border-color:var(--accent3);}
 .emblem-preview img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.emblem-name{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:6px;}
+.emblem-name{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:4px;}
+.emblem-type-badge{display:inline-block;font-family:var(--font-mono);font-size:8px;padding:2px 6px;border-radius:20px;margin-bottom:8px;letter-spacing:1px;}
+.emblem-type-badge.general{background:rgba(255,208,0,.15);color:var(--accent2);border:1px solid rgba(255,208,0,.3);}
+.emblem-type-badge.rookie{background:rgba(0,229,255,.1);color:var(--accent3);border:1px solid rgba(0,229,255,.25);}
 .emblem-upload-btn{width:100%;padding:5px;background:none;border:1px dashed var(--border);border-radius:4px;color:var(--muted);font-family:var(--font-mono);font-size:9px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
 .emblem-upload-btn:hover{border-color:var(--accent3);color:var(--accent3);}
 .emblem-remove-btn{position:absolute;top:6px;right:6px;width:20px;height:20px;background:rgba(255,45,85,.2);border:1px solid var(--accent);border-radius:3px;color:var(--accent);font-size:10px;cursor:pointer;display:none;align-items:center;justify-content:center;}
@@ -422,38 +431,58 @@ function removeBg() {
 
 // ══════════════ EMBLEMS ══════════════
 const CAT_INFO = [
-  {id:'grand-prix',   name:'그랑프리',    emoji:'🏆'},
-  {id:'jury-general', name:'심사위원상(일반)', emoji:'⚖️'},
-  {id:'rising-star',  name:'라이징스타',  emoji:'⭐'},
-  {id:'jury-rookie',  name:'심사위원상(루키)', emoji:'⚖️'},
-  {id:'art',          name:'아트',        emoji:'🎨'},
-  {id:'design',       name:'게임디자인',  emoji:'🕹️'},
-  {id:'experimental', name:'실험성',      emoji:'🔬'},
-  {id:'narrative',    name:'서사',        emoji:'📖'},
-  {id:'casual',       name:'캐주얼',      emoji:'🎲'},
-  {id:'esports',      name:'이스포츠',    emoji:'🎮'},
-  {id:'audio',        name:'오디오',      emoji:'🎵'},
-  {id:'social',       name:'소셜임팩트',  emoji:'🌍'},
-  {id:'action',       name:'액션',        emoji:'⚔️'},
+  {id:'grand-prix',   name:'그랑프리',       emoji:'🏆'},
+  {id:'jury-general', name:'심사위원상(일반)',emoji:'⚖️'},
+  {id:'rising-star',  name:'라이징스타',     emoji:'⭐'},
+  {id:'jury-rookie',  name:'심사위원상(루키)',emoji:'⚖️'},
+  {id:'art',          name:'아트',           emoji:'🎨'},
+  {id:'design',       name:'게임디자인',     emoji:'🕹️'},
+  {id:'experimental', name:'실험성',         emoji:'🔬'},
+  {id:'narrative',    name:'서사',           emoji:'📖'},
+  {id:'casual',       name:'캐주얼',         emoji:'🎲'},
+  {id:'esports',      name:'이스포츠',       emoji:'🎮'},
+  {id:'audio',        name:'오디오',         emoji:'🎵'},
+  {id:'social',       name:'소셜임팩트',     emoji:'🌍'},
+  {id:'action',       name:'액션',           emoji:'⚔️'},
 ];
+
+let currentEmblemTarget = { id: null, type: 'emblem' };
+
 function buildEmblemGrid() {
   const grid = document.getElementById('emblemGrid');
-  grid.innerHTML = CAT_INFO.map(cat => {
-    const emblem = config.categories?.[cat.id]?.emblem || '';
-    const inner = emblem
-      ? `<img src="${emblem}" alt="${cat.name}">`
-      : `<span>${cat.emoji}</span>`;
-    return `
-      <div class="emblem-item">
-        <div class="emblem-preview" onclick="triggerEmblemUpload('${cat.id}')" id="ep_${cat.id}">${inner}</div>
-        <div class="emblem-name">${cat.name}</div>
-        <button class="emblem-upload-btn" onclick="triggerEmblemUpload('${cat.id}')">📁 이미지 업로드</button>
-        ${emblem?`<button class="emblem-remove-btn" onclick="removeEmblem('${cat.id}')">✕</button>`:''}
-      </div>`;
-  }).join('');
+  const commonIds = ['art','design','experimental','narrative','casual','esports','audio','social','action'];
+  let html = '';
+  html += `<div class="emblem-section-label general">🏆 최고상 — 일반부문</div><div class="emblem-grid" style="margin-bottom:20px">`;
+  ['grand-prix','jury-general'].forEach(id => { html += buildEmblemItem(CAT_INFO.find(c=>c.id===id), 'emblem', 'general'); });
+  html += `</div>`;
+  html += `<div class="emblem-section-label rookie">⭐ 최고상 — 루키부문</div><div class="emblem-grid" style="margin-bottom:20px">`;
+  ['rising-star','jury-rookie'].forEach(id => { html += buildEmblemItem(CAT_INFO.find(c=>c.id===id), 'emblemRookie', 'rookie'); });
+  html += `</div>`;
+  html += `<div class="emblem-section-label general">🎨 공통 어워드 — 일반부문</div><div class="emblem-grid" style="margin-bottom:20px">`;
+  commonIds.forEach(id => { html += buildEmblemItem(CAT_INFO.find(c=>c.id===id), 'emblem', 'general'); });
+  html += `</div>`;
+  html += `<div class="emblem-section-label rookie">🎨 공통 어워드 — 루키부문</div><div class="emblem-grid">`;
+  commonIds.forEach(id => { html += buildEmblemItem(CAT_INFO.find(c=>c.id===id), 'emblemRookie', 'rookie'); });
+  html += `</div>`;
+  grid.innerHTML = html;
 }
-function triggerEmblemUpload(catId) {
-  currentEmblemId = catId;
+
+function buildEmblemItem(cat, type, divClass) {
+  const emblem = config.categories?.[cat.id]?.[type] || '';
+  const inner = emblem ? `<img src="${emblem}" alt="${cat.name}">` : `<span>${cat.emoji}</span>`;
+  const badgeLabel = divClass === 'general' ? '일반' : '루키';
+  return `
+    <div class="emblem-item ${divClass==='rookie'?'rookie-item':''}">
+      <div class="emblem-preview" onclick="triggerEmblemUpload('${cat.id}','${type}')">${inner}</div>
+      <div class="emblem-name">${cat.name}</div>
+      <div class="emblem-type-badge ${divClass}">${badgeLabel}</div>
+      <button class="emblem-upload-btn" onclick="triggerEmblemUpload('${cat.id}','${type}')">📁 업로드</button>
+      ${emblem?`<button class="emblem-remove-btn" onclick="removeEmblem('${cat.id}','${type}')">✕</button>`:''}
+    </div>`;
+}
+
+function triggerEmblemUpload(catId, type) {
+  currentEmblemTarget = { id: catId, type };
   document.getElementById('emblemFileInput').click();
 }
 function handleEmblemUpload(event) {
@@ -461,15 +490,15 @@ function handleEmblemUpload(event) {
   const reader = new FileReader();
   reader.onload = e => {
     if(!config.categories) config.categories = {};
-    if(!config.categories[currentEmblemId]) config.categories[currentEmblemId] = {};
-    config.categories[currentEmblemId].emblem = e.target.result;
+    if(!config.categories[currentEmblemTarget.id]) config.categories[currentEmblemTarget.id] = {};
+    config.categories[currentEmblemTarget.id][currentEmblemTarget.type] = e.target.result;
     buildEmblemGrid();
   };
   reader.readAsDataURL(file);
   event.target.value = '';
 }
-function removeEmblem(catId) {
-  if(config.categories?.[catId]) config.categories[catId].emblem = '';
+function removeEmblem(catId, type) {
+  if(config.categories?.[catId]) config.categories[catId][type] = '';
   buildEmblemGrid();
 }
 
