@@ -51,7 +51,7 @@ header::before{content:'AWARDS';position:absolute;right:-10px;top:-20px;font-fam
 .sponsors-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
 .sponsors-label{font-family:var(--font-mono);font-size:9px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;flex-shrink:0;}
 .sponsor-logo-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-.sponsor-logo-item{height:26px;opacity:.65;transition:opacity .2s;filter:brightness(0) invert(1);object-fit:contain;}
+.sponsor-logo-item{height:40px;opacity:.8;transition:opacity .2s;filter:brightness(0) invert(1);object-fit:contain;}
 .sponsor-logo-item:hover{opacity:1;}
 .stats-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 48px;}
 .stats-inner{max-width:1280px;margin:0 auto;display:flex;gap:40px;flex-wrap:wrap;align-items:center;}
@@ -181,7 +181,7 @@ footer a{color:var(--accent);text-decoration:none;}
 </header>
 <div class="sponsors-bar" id="sponsorsBar">
   <div class="sponsors-inner">
-    <span class="sponsors-label" data-ko="후원" data-en="SPONSORS">후원</span>
+    <span class="sponsors-label" id="sponsorsLabel">BIC 2026 SPONSORS</span>
     <div class="sponsor-logo-wrap" id="sponsorLogoWrap"></div>
   </div>
 </div>
@@ -282,6 +282,10 @@ function applyConfig(){
     cat.emblemImg        = cfgEmb  || (mapFile ? BASE + mapFile.general : '');
     cat.emblemImgRookie  = cfgEmbR || (mapFile ? BASE + mapFile.rookie  : '');
   });
+  // 스폰서 라벨
+  const sponsorsLabel = document.getElementById('sponsorsLabel');
+  if(sponsorsLabel && s.sponsorsLabel) sponsorsLabel.textContent = s.sponsorsLabel;
+
   const sponsors=(siteConfig.sponsors||[]).filter(sp=>sp.logo&&sp.name);
   if(sponsors.length){
     document.getElementById('sponsorsBar').style.display='block';
@@ -302,12 +306,19 @@ function setLang(l){
 }
 function renderStats(){
   const years=[...new Set(awardsData.map(a=>a.year))];
-  document.getElementById('statsBar').innerHTML=[
+  const defaultStats=[
     {val:years.length,labelKo:'개최 연도',labelEn:'Years'},
     {val:awardsData.length,labelKo:'총 수상',labelEn:'Total Awards'},
     {val:Math.max(...awardsData.map(a=>a.year),0),labelKo:'최근 개최',labelEn:'Latest'},
     {val:'BIC',labelKo:'부산 인디 커넥트',labelEn:'Busan Indie Connect'},
-  ].map(s=>`<div class="stat-item"><div class="stat-num">${s.val}</div><div class="stat-label">${lang==='ko'?s.labelKo:s.labelEn}</div></div>`).join('');
+  ];
+  const cfgStats = siteConfig?.site?.stats;
+  const stats = (cfgStats && cfgStats.length) ? cfgStats : defaultStats;
+  document.getElementById('statsBar').innerHTML=stats.map(s=>`
+    <div class="stat-item">
+      <div class="stat-num">${s.val}</div>
+      <div class="stat-label">${lang==='ko'?s.labelKo:s.labelEn}</div>
+    </div>`).join('');
 }
 function renderYearNav(){
   const years=[...new Set(awardsData.map(a=>a.year))].sort((a,b)=>b-a);

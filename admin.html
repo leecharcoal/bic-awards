@@ -182,6 +182,77 @@ input[type="color"]{width:36px;height:36px;border:1px solid var(--border);border
           <label class="form-label">Subtitle (하단 부제)</label>
           <input class="form-input" id="cfg_subtitle" placeholder="역대 수상작 아카이브 / All-Time Award Archive">
         </div>
+        <div class="form-group">
+          <label class="form-label">스폰서 바 라벨 (예: BIC 2026 SPONSORS)</label>
+          <input class="form-input" id="cfg_sponsorsLabel" placeholder="BIC 2026 SPONSORS">
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-title">상단 통계 바</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">통계 1 — 값</label>
+            <input class="form-input" id="cfg_stat1val" placeholder="11">
+          </div>
+          <div class="form-group">
+            <label class="form-label">통계 1 — 라벨 (KO)</label>
+            <input class="form-input" id="cfg_stat1labelKo" placeholder="개최 연도">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">통계 1 — 라벨 (EN)</label>
+            <input class="form-input" id="cfg_stat1labelEn" placeholder="Years">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">통계 2 — 값</label>
+            <input class="form-input" id="cfg_stat2val" placeholder="96">
+          </div>
+          <div class="form-group">
+            <label class="form-label">통계 2 — 라벨 (KO)</label>
+            <input class="form-input" id="cfg_stat2labelKo" placeholder="총 수상">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">통계 2 — 라벨 (EN)</label>
+            <input class="form-input" id="cfg_stat2labelEn" placeholder="Total Awards">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">통계 3 — 값</label>
+            <input class="form-input" id="cfg_stat3val" placeholder="2025">
+          </div>
+          <div class="form-group">
+            <label class="form-label">통계 3 — 라벨 (KO)</label>
+            <input class="form-input" id="cfg_stat3labelKo" placeholder="최근 개최">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">통계 3 — 라벨 (EN)</label>
+            <input class="form-input" id="cfg_stat3labelEn" placeholder="Latest">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">통계 4 — 값</label>
+            <input class="form-input" id="cfg_stat4val" placeholder="BIC">
+          </div>
+          <div class="form-group">
+            <label class="form-label">통계 4 — 라벨 (KO)</label>
+            <input class="form-input" id="cfg_stat4labelKo" placeholder="부산 인디 커넥트">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">통계 4 — 라벨 (EN)</label>
+            <input class="form-input" id="cfg_stat4labelEn" placeholder="Busan Indie Connect">
+          </div>
+        </div>
       </div>
     </div>
 
@@ -343,8 +414,16 @@ async function loadConfig() {
 
 function populateForm() {
   const s = config.site || {};
-  document.getElementById('cfg_eyebrow').value     = s.eyebrow || '';
-  document.getElementById('cfg_subtitle').value    = s.subtitle || '';
+  document.getElementById('cfg_eyebrow').value        = s.eyebrow || '';
+  document.getElementById('cfg_subtitle').value       = s.subtitle || '';
+  document.getElementById('cfg_sponsorsLabel').value  = s.sponsorsLabel || '';
+  const st = s.stats || [];
+  for(let i=0; i<4; i++){
+    const n = i+1;
+    document.getElementById(`cfg_stat${n}val`).value     = st[i]?.val     || '';
+    document.getElementById(`cfg_stat${n}labelKo`).value = st[i]?.labelKo || '';
+    document.getElementById(`cfg_stat${n}labelEn`).value = st[i]?.labelEn || '';
+  }
   document.getElementById('cfg_bgImage').value     = s.bgImage || '';
   document.getElementById('cfg_bgOverlay').value   = s.bgOverlay ?? 0.6;
 
@@ -560,8 +639,15 @@ function handleSponsorLogo(event) {
 // ══════════════ COLLECT & SAVE ══════════════
 function collectForm() {
   if(!config.site) config.site = {};
-  config.site.eyebrow     = document.getElementById('cfg_eyebrow').value;
-  config.site.subtitle    = document.getElementById('cfg_subtitle').value;
+  config.site.eyebrow        = document.getElementById('cfg_eyebrow').value;
+  config.site.subtitle       = document.getElementById('cfg_subtitle').value;
+  config.site.sponsorsLabel  = document.getElementById('cfg_sponsorsLabel').value;
+  config.site.stats = [
+    { val: document.getElementById('cfg_stat1val').value, labelKo: document.getElementById('cfg_stat1labelKo').value, labelEn: document.getElementById('cfg_stat1labelEn').value },
+    { val: document.getElementById('cfg_stat2val').value, labelKo: document.getElementById('cfg_stat2labelKo').value, labelEn: document.getElementById('cfg_stat2labelEn').value },
+    { val: document.getElementById('cfg_stat3val').value, labelKo: document.getElementById('cfg_stat3labelKo').value, labelEn: document.getElementById('cfg_stat3labelEn').value },
+    { val: document.getElementById('cfg_stat4val').value, labelKo: document.getElementById('cfg_stat4labelKo').value, labelEn: document.getElementById('cfg_stat4labelEn').value },
+  ].filter(s => s.val || s.labelKo);
   config.site.bgImage     = document.getElementById('cfg_bgImage').value || config.site.bgImage || '';
   config.site.bgOverlay   = parseFloat(document.getElementById('cfg_bgOverlay').value) || 0.6;
   config.site.displayFont = document.getElementById('cfg_displayFont').value;
