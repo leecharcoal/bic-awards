@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIC Awards — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080810;--surface:#10101c;--surface2:#18182a;--surface3:#20203a;
+  --accent:#ff2d55;--accent2:#ffd000;--accent3:#00e5ff;
+  --text:#f0f0f8;--muted:#6060a0;--border:#22223a;
+  --font-mono:'Space Mono',monospace;--font-body:'Noto Sans KR',sans-serif;
+  --radius:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;}
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9000;flex-direction:column;gap:24px;}
+.login-logo{font-family:'Bebas Neue',var(--font-mono);font-size:56px;letter-spacing:4px;color:var(--text);}
+.login-logo em{color:var(--accent);font-style:normal;}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px;width:320px;display:flex;flex-direction:column;gap:14px;}
+.login-title{font-family:var(--font-mono);font-size:12px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;text-align:center;}
+.login-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font-mono);font-size:14px;padding:12px;outline:none;text-align:center;letter-spacing:4px;}
+.login-input:focus{border-color:var(--accent);}
+.login-btn{width:100%;padding:12px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-family:var(--font-mono);font-size:12px;letter-spacing:2px;cursor:pointer;transition:all .2s;}
+.login-btn:hover{background:#ff4d6d;}
+.login-err{font-family:var(--font-mono);font-size:11px;color:var(--accent);text-align:center;display:none;}
+.login-screen.hidden{display:none;}
+
+/* LAYOUT */
+.admin-wrap{display:flex;min-height:100vh;}
+.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);flex-shrink:0;padding:24px 0;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;}
+.sidebar-logo{font-family:var(--font-mono);font-size:13px;color:var(--accent);letter-spacing:2px;padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:12px;}
+.sidebar-logo span{color:var(--muted);display:block;font-size:9px;margin-top:4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;transition:all .2s;font-size:13px;color:var(--muted);border-left:3px solid transparent;}
+.nav-item:hover{color:var(--text);background:var(--surface2);}
+.nav-item.active{color:var(--accent2);border-left-color:var(--accent2);background:var(--surface2);}
+.nav-icon{font-size:16px;width:20px;text-align:center;}
+.sidebar-bottom{position:absolute;bottom:0;left:0;right:0;padding:16px 20px;border-top:1px solid var(--border);}
+.logout-btn{width:100%;padding:8px;background:none;border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);font-family:var(--font-mono);font-size:10px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
+.logout-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+.main-area{margin-left:220px;flex:1;padding:40px;}
+.page-title{font-family:var(--font-mono);font-size:22px;color:var(--accent2);letter-spacing:3px;margin-bottom:4px;}
+.page-desc{font-size:12px;color:var(--muted);margin-bottom:28px;letter-spacing:1px;}
+
+.section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px;}
+.section-title{font-family:var(--font-mono);font-size:11px;color:var(--accent3);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.form-input,.form-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:var(--font-body);font-size:13px;padding:9px 12px;outline:none;transition:border-color .2s;}
+.form-input:focus,.form-select:focus{border-color:var(--accent);}
+.form-select option{background:var(--surface2);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+
+/* COLOR ROW */
+.color-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.color-swatch{width:36px;height:36px;border-radius:4px;border:1px solid var(--border);flex-shrink:0;}
+.color-name{font-family:var(--font-mono);font-size:11px;color:var(--muted);flex:1;letter-spacing:1px;}
+input[type="color"]{width:36px;height:36px;border:1px solid var(--border);border-radius:4px;background:none;cursor:pointer;padding:2px;}
+.color-hex{width:90px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:var(--font-mono);font-size:11px;padding:8px;outline:none;}
+.color-hex:focus{border-color:var(--accent);}
+
+/* EMBLEM GRID */
+.emblem-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+.emblem-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center;position:relative;}
+.emblem-preview{width:64px;height:64px;border-radius:50%;border:2px solid var(--border);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--surface3);overflow:hidden;cursor:pointer;transition:all .2s;}
+.emblem-preview:hover{border-color:var(--accent3);}
+.emblem-preview img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.emblem-name{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:6px;}
+.emblem-upload-btn{width:100%;padding:5px;background:none;border:1px dashed var(--border);border-radius:4px;color:var(--muted);font-family:var(--font-mono);font-size:9px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
+.emblem-upload-btn:hover{border-color:var(--accent3);color:var(--accent3);}
+.emblem-remove-btn{position:absolute;top:6px;right:6px;width:20px;height:20px;background:rgba(255,45,85,.2);border:1px solid var(--accent);border-radius:3px;color:var(--accent);font-size:10px;cursor:pointer;display:none;align-items:center;justify-content:center;}
+.emblem-item:hover .emblem-remove-btn{display:flex;}
+
+/* BG IMAGE */
+.bg-preview{width:100%;height:160px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;position:relative;margin-bottom:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.bg-preview img{width:100%;height:100%;object-fit:cover;}
+.bg-preview-empty{font-family:var(--font-mono);font-size:12px;color:var(--muted);letter-spacing:1px;text-align:center;}
+.bg-preview:hover::after{content:'클릭하여 이미지 변경';position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;color:#fff;letter-spacing:1px;}
+
+/* SPONSOR */
+.sponsor-list{display:flex;flex-direction:column;gap:10px;}
+.sponsor-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;gap:12px;align-items:center;}
+.sponsor-logo-preview{width:60px;height:40px;background:var(--surface3);border:1px solid var(--border);border-radius:4px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.sponsor-logo-preview img{width:100%;height:100%;object-fit:contain;}
+.sponsor-fields{flex:1;display:grid;grid-template-columns:1fr 1fr 80px 80px;gap:8px;align-items:center;}
+.sponsor-del-btn{width:28px;height:28px;background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted);cursor:pointer;font-size:12px;transition:all .2s;flex-shrink:0;}
+.sponsor-del-btn:hover{border-color:var(--accent);color:var(--accent);}
+.add-sponsor-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;background:none;border:1px dashed var(--accent2);border-radius:var(--radius);color:var(--accent2);font-family:var(--font-mono);font-size:11px;cursor:pointer;transition:all .2s;letter-spacing:1px;margin-top:10px;}
+.add-sponsor-btn:hover{background:rgba(255,208,0,.08);}
+
+/* SAVE BTN */
+.save-bar{position:fixed;bottom:0;left:220px;right:0;background:var(--surface);border-top:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;z-index:100;}
+.save-btn{padding:10px 32px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-family:var(--font-mono);font-size:12px;letter-spacing:2px;cursor:pointer;transition:all .2s;font-weight:700;}
+.save-btn:hover{background:#ff4d6d;}
+.save-btn:disabled{background:var(--muted);cursor:not-allowed;}
+.save-status{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:1px;}
+.save-status.success{color:#4ade80;}
+.save-status.error{color:var(--accent);}
+.preview-btn{padding:10px 20px;background:none;border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);font-family:var(--font-mono);font-size:11px;cursor:pointer;transition:all .2s;letter-spacing:1px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.preview-btn:hover{border-color:var(--accent3);color:var(--accent3);}
+
+/* TABS */
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* HIDDEN */
+.hidden-file{display:none;}
+
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .main-area{margin-left:0;}
+  .save-bar{left:0;}
+  .form-row,.form-row-3,.sponsor-fields{grid-template-columns:1fr;}
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-logo">BIC <em>ADMIN</em></div>
+  <div class="login-box">
+    <div class="login-title">관리자 로그인</div>
+    <input class="login-input" type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">LOGIN</button>
+    <div class="login-err" id="loginErr">비밀번호가 올바르지 않습니다</div>
+  </div>
+</div>
+
+<!-- HIDDEN FILE INPUTS -->
+<input type="file" class="hidden-file" id="bgFileInput" accept="image/*" onchange="handleBgUpload(event)">
+<input type="file" class="hidden-file" id="emblemFileInput" accept="image/*" onchange="handleEmblemUpload(event)">
+<input type="file" class="hidden-file" id="sponsorLogoInput" accept="image/*" onchange="handleSponsorLogo(event)">
+
+<!-- ADMIN WRAP -->
+<div class="admin-wrap" id="adminWrap" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">BIC ADMIN <span>awards.bicfest.org</span></div>
+    <div class="nav-item active" onclick="showTab('site')" id="nav-site"><span class="nav-icon">🎨</span> 사이트 설정</div>
+    <div class="nav-item" onclick="showTab('colors')" id="nav-colors"><span class="nav-icon">🌈</span> 컬러 설정</div>
+    <div class="nav-item" onclick="showTab('fonts')" id="nav-fonts"><span class="nav-icon">🔤</span> 폰트 설정</div>
+    <div class="nav-item" onclick="showTab('bg')" id="nav-bg"><span class="nav-icon">🖼</span> 배경 이미지</div>
+    <div class="nav-item" onclick="showTab('emblems')" id="nav-emblems"><span class="nav-icon">🏅</span> 어워드 엠블럼</div>
+    <div class="nav-item" onclick="showTab('sponsors')" id="nav-sponsors"><span class="nav-icon">🤝</span> 스폰서/파트너</div>
+    <div class="sidebar-bottom">
+      <button class="logout-btn" onclick="doLogout()">⏻ 로그아웃</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-area">
+
+    <!-- SITE SETTINGS -->
+    <div class="tab-content active" id="tab-site">
+      <div class="page-title">사이트 설정</div>
+      <div class="page-desc">헤더 텍스트를 수정합니다</div>
+      <div class="section">
+        <div class="section-title">헤더 텍스트</div>
+        <div class="form-group">
+          <label class="form-label">Eyebrow (상단 소제목)</label>
+          <input class="form-input" id="cfg_eyebrow" placeholder="부산 인디 커넥트 페스티벌">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subtitle (하단 부제)</label>
+          <input class="form-input" id="cfg_subtitle" placeholder="역대 수상작 아카이브 / All-Time Award Archive">
+        </div>
+      </div>
+    </div>
+
+    <!-- COLORS -->
+    <div class="tab-content" id="tab-colors">
+      <div class="page-title">컬러 설정</div>
+      <div class="page-desc">사이트 전체 키컬러를 수정합니다</div>
+      <div class="section">
+        <div class="section-title">컬러 팔레트</div>
+        <div id="colorRows"></div>
+      </div>
+    </div>
+
+    <!-- FONTS -->
+    <div class="tab-content" id="tab-fonts">
+      <div class="page-title">폰트 설정</div>
+      <div class="page-desc">사이트 전체 폰트를 변경합니다</div>
+      <div class="section">
+        <div class="section-title">폰트 선택</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Display Font (제목/연도)</label>
+            <select class="form-select" id="cfg_displayFont">
+              <option value="'Bebas Neue','Black Han Sans',sans-serif">Bebas Neue (현재)</option>
+              <option value="'Black Han Sans',sans-serif">Black Han Sans</option>
+              <option value="'Russo One',sans-serif">Russo One</option>
+              <option value="Georgia,serif">Georgia Serif</option>
+              <option value="'Courier New',monospace">Courier New</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Body Font (본문)</label>
+            <select class="form-select" id="cfg_bodyFont">
+              <option value="'Noto Sans KR',sans-serif">Noto Sans KR (현재)</option>
+              <option value="'Malgun Gothic',sans-serif">Malgun Gothic</option>
+              <option value="Georgia,serif">Georgia</option>
+              <option value="'Apple SD Gothic Neo',sans-serif">Apple SD Gothic Neo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BG IMAGE -->
+    <div class="tab-content" id="tab-bg">
+      <div class="page-title">배경 이미지</div>
+      <div class="page-desc">사이트 전체 배경 이미지를 설정합니다 (로컬 파일 또는 URL)</div>
+      <div class="section">
+        <div class="section-title">배경 이미지 설정</div>
+        <div class="bg-preview" id="bgPreview" onclick="document.getElementById('bgFileInput').click()">
+          <div class="bg-preview-empty" id="bgPreviewEmpty">
+            <div style="font-size:32px;margin-bottom:8px;">🖼</div>
+            클릭하여 이미지 업로드<br>
+            <span style="font-size:10px;opacity:.5;">PNG / JPG / WebP / SVG</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">또는 URL로 입력</label>
+          <input class="form-input" id="cfg_bgImage" placeholder="https://..." oninput="previewBgUrl(this.value)">
+        </div>
+        <button class="add-sponsor-btn" style="border-color:var(--accent);color:var(--accent);" onclick="removeBg()">✕ 배경 이미지 제거</button>
+      </div>
+      <div class="section">
+        <div class="section-title">배경 투명도</div>
+        <div class="form-group">
+          <label class="form-label">오버레이 어둡기 (0 = 없음, 1 = 완전히 어둠)</label>
+          <input class="form-input" id="cfg_bgOverlay" type="number" min="0" max="1" step="0.05" placeholder="0.6">
+        </div>
+      </div>
+    </div>
+
+    <!-- EMBLEMS -->
+    <div class="tab-content" id="tab-emblems">
+      <div class="page-title">어워드 엠블럼</div>
+      <div class="page-desc">각 어워드 부문의 엠블럼 이미지를 교체합니다 (로컬 파일 업로드)</div>
+      <div class="section">
+        <div class="section-title">부문별 엠블럼</div>
+        <div class="emblem-grid" id="emblemGrid"></div>
+      </div>
+    </div>
+
+    <!-- SPONSORS -->
+    <div class="tab-content" id="tab-sponsors">
+      <div class="page-title">스폰서 / 파트너</div>
+      <div class="page-desc">연도별 스폰서 및 파트너 로고를 관리합니다</div>
+      <div class="section">
+        <div class="section-title">스폰서 목록</div>
+        <div class="sponsor-list" id="sponsorList"></div>
+        <button class="add-sponsor-btn" onclick="addSponsor()">＋ 스폰서 추가</button>
+      </div>
+    </div>
+
+  </div><!-- /main-area -->
+
+  <!-- SAVE BAR -->
+  <div class="save-bar">
+    <button class="save-btn" id="saveBtn" onclick="saveConfig()">💾 저장 및 배포</button>
+    <a class="preview-btn" href="/bic-awards/" target="_blank">👁 사이트 미리보기</a>
+    <span class="save-status" id="saveStatus"></span>
+  </div>
+
+</div><!-- /admin-wrap -->
+
+<script>
+// ══════════════ CONFIG ══════════════
+// 비밀번호 — 여기서 변경하세요
+const ADMIN_PASSWORD = 'bic2025admin';
+const GITHUB_OWNER   = 'leecharcoal';
+const GITHUB_REPO    = 'bic-awards';
+const CONFIG_PATH    = 'public/config.json';
+
+let ghToken = '';
+let config  = {};
+let currentEmblemId = null;
+let currentSponsorIdx = null;
+
+// ══════════════ LOGIN ══════════════
+function doLogin() {
+  const pw = document.getElementById('pwInput').value;
+  if (pw === ADMIN_PASSWORD) {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminWrap').style.display = 'flex';
+    loadConfig();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+  }
+}
+function doLogout() {
+  location.reload();
+}
+
+// ══════════════ TABS ══════════════
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+}
+
+// ══════════════ LOAD CONFIG ══════════════
+async function loadConfig() {
+  try {
+    const res = await fetch('/bic-awards/config.json?t=' + Date.now());
+    config = await res.json();
+  } catch(e) {
+    config = {
+      site: { eyebrow:'부산 인디 커넥트 페스티벌', subtitle:'역대 수상작 아카이브 / All-Time Award Archive',
+              primaryColor:'#ff2d55', accentColor:'#ffd000', subColor:'#00e5ff',
+              bgColor:'#080810', displayFont:"'Bebas Neue','Black Han Sans',sans-serif",
+              bodyFont:"'Noto Sans KR',sans-serif", bgImage:'', bgOverlay: 0.6 },
+      categories: {},
+      sponsors: []
+    };
+  }
+  populateForm();
+}
+
+function populateForm() {
+  const s = config.site || {};
+  document.getElementById('cfg_eyebrow').value     = s.eyebrow || '';
+  document.getElementById('cfg_subtitle').value    = s.subtitle || '';
+  document.getElementById('cfg_bgImage').value     = s.bgImage || '';
+  document.getElementById('cfg_bgOverlay').value   = s.bgOverlay ?? 0.6;
+
+  // fonts
+  const dfSel = document.getElementById('cfg_displayFont');
+  const bfSel = document.getElementById('cfg_bodyFont');
+  if(s.displayFont) dfSel.value = s.displayFont;
+  if(s.bodyFont)    bfSel.value = s.bodyFont;
+
+  // bg preview
+  if(s.bgImage) {
+    document.getElementById('bgPreviewEmpty').style.display = 'none';
+    const img = document.createElement('img');
+    img.src = s.bgImage;
+    document.getElementById('bgPreview').appendChild(img);
+  }
+
+  buildColorRows();
+  buildEmblemGrid();
+  buildSponsorList();
+}
+
+// ══════════════ COLORS ══════════════
+const COLOR_DEFS = [
+  { key:'primaryColor', label:'Primary 포인트 컬러' },
+  { key:'accentColor',  label:'Accent 강조 컬러 (통계/버튼)' },
+  { key:'subColor',     label:'Sub 보조 컬러 (카테고리)' },
+  { key:'bgColor',      label:'Background 배경색' },
+];
+function buildColorRows() {
+  const wrap = document.getElementById('colorRows');
+  wrap.innerHTML = COLOR_DEFS.map(d => `
+    <div class="color-row">
+      <div class="color-swatch" id="sw_${d.key}" style="background:${config.site?.[d.key]||'#ff2d55'}"></div>
+      <span class="color-name">${d.label}</span>
+      <input type="color" id="cp_${d.key}" value="${config.site?.[d.key]||'#ff2d55'}" oninput="syncColor('${d.key}',this.value)">
+      <input class="color-hex" id="ch_${d.key}" value="${config.site?.[d.key]||'#ff2d55'}" oninput="syncColorHex('${d.key}',this.value)">
+    </div>`).join('');
+}
+function syncColor(key, val) {
+  if(!config.site) config.site = {};
+  config.site[key] = val;
+  document.getElementById(`sw_${key}`).style.background = val;
+  document.getElementById(`ch_${key}`).value = val;
+}
+function syncColorHex(key, val) {
+  if(/^#[0-9a-fA-F]{6}$/.test(val)) {
+    config.site[key] = val;
+    document.getElementById(`cp_${key}`).value = val;
+    document.getElementById(`sw_${key}`).style.background = val;
+  }
+}
+
+// ══════════════ BG IMAGE ══════════════
+function handleBgUpload(event) {
+  const file = event.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    config.site.bgImage = e.target.result;
+    refreshBgPreview(e.target.result);
+    document.getElementById('cfg_bgImage').value = '';
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+function previewBgUrl(val) {
+  if(val.startsWith('http') || val.startsWith('data:')) {
+    config.site.bgImage = val;
+    refreshBgPreview(val);
+  }
+}
+function refreshBgPreview(src) {
+  const wrap = document.getElementById('bgPreview');
+  document.getElementById('bgPreviewEmpty').style.display = 'none';
+  let img = wrap.querySelector('img');
+  if(!img) { img = document.createElement('img'); wrap.appendChild(img); }
+  img.src = src;
+}
+function removeBg() {
+  config.site.bgImage = '';
+  document.getElementById('cfg_bgImage').value = '';
+  document.getElementById('bgPreviewEmpty').style.display = 'block';
+  const img = document.getElementById('bgPreview').querySelector('img');
+  if(img) img.remove();
+}
+
+// ══════════════ EMBLEMS ══════════════
+const CAT_INFO = [
+  {id:'grand-prix',   name:'그랑프리',    emoji:'🏆'},
+  {id:'jury-general', name:'심사위원상(일반)', emoji:'⚖️'},
+  {id:'rising-star',  name:'라이징스타',  emoji:'⭐'},
+  {id:'jury-rookie',  name:'심사위원상(루키)', emoji:'⚖️'},
+  {id:'art',          name:'아트',        emoji:'🎨'},
+  {id:'design',       name:'게임디자인',  emoji:'🕹️'},
+  {id:'experimental', name:'실험성',      emoji:'🔬'},
+  {id:'narrative',    name:'서사',        emoji:'📖'},
+  {id:'casual',       name:'캐주얼',      emoji:'🎲'},
+  {id:'esports',      name:'이스포츠',    emoji:'🎮'},
+  {id:'audio',        name:'오디오',      emoji:'🎵'},
+  {id:'social',       name:'소셜임팩트',  emoji:'🌍'},
+  {id:'action',       name:'액션',        emoji:'⚔️'},
+];
+function buildEmblemGrid() {
+  const grid = document.getElementById('emblemGrid');
+  grid.innerHTML = CAT_INFO.map(cat => {
+    const emblem = config.categories?.[cat.id]?.emblem || '';
+    const inner = emblem
+      ? `<img src="${emblem}" alt="${cat.name}">`
+      : `<span>${cat.emoji}</span>`;
+    return `
+      <div class="emblem-item">
+        <div class="emblem-preview" onclick="triggerEmblemUpload('${cat.id}')" id="ep_${cat.id}">${inner}</div>
+        <div class="emblem-name">${cat.name}</div>
+        <button class="emblem-upload-btn" onclick="triggerEmblemUpload('${cat.id}')">📁 이미지 업로드</button>
+        ${emblem?`<button class="emblem-remove-btn" onclick="removeEmblem('${cat.id}')">✕</button>`:''}
+      </div>`;
+  }).join('');
+}
+function triggerEmblemUpload(catId) {
+  currentEmblemId = catId;
+  document.getElementById('emblemFileInput').click();
+}
+function handleEmblemUpload(event) {
+  const file = event.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    if(!config.categories) config.categories = {};
+    if(!config.categories[currentEmblemId]) config.categories[currentEmblemId] = {};
+    config.categories[currentEmblemId].emblem = e.target.result;
+    buildEmblemGrid();
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+function removeEmblem(catId) {
+  if(config.categories?.[catId]) config.categories[catId].emblem = '';
+  buildEmblemGrid();
+}
+
+// ══════════════ SPONSORS ══════════════
+function buildSponsorList() {
+  const list = document.getElementById('sponsorList');
+  const sponsors = config.sponsors || [];
+  if(!sponsors.length) { list.innerHTML = `<div style="font-family:var(--font-mono);font-size:12px;color:var(--muted);padding:16px;text-align:center;letter-spacing:1px;">스폰서가 없습니다</div>`; return; }
+  list.innerHTML = sponsors.map((sp,i) => {
+    const logoInner = sp.logo
+      ? `<img src="${sp.logo}" alt="${sp.name}" style="width:100%;height:100%;object-fit:contain;">`
+      : `<span style="font-size:10px;color:var(--muted);">로고</span>`;
+    return `
+      <div class="sponsor-item">
+        <div class="sponsor-logo-preview" onclick="triggerSponsorLogo(${i})" title="클릭하여 로고 업로드">${logoInner}</div>
+        <div class="sponsor-fields">
+          <input class="form-input" placeholder="스폰서명" value="${sp.name||''}" oninput="updateSponsor(${i},'name',this.value)">
+          <input class="form-input" placeholder="링크 URL" value="${sp.url||''}" oninput="updateSponsor(${i},'url',this.value)">
+          <select class="form-select" onchange="updateSponsor(${i},'type',this.value)">
+            <option value="sponsor" ${sp.type==='sponsor'?'selected':''}>스폰서</option>
+            <option value="partner" ${sp.type==='partner'?'selected':''}>파트너</option>
+            <option value="banner"  ${sp.type==='banner'?'selected':''}>배너</option>
+          </select>
+          <input class="form-input" placeholder="연도(0=상시)" type="number" value="${sp.year||0}" oninput="updateSponsor(${i},'year',parseInt(this.value)||0)">
+        </div>
+        <button class="sponsor-del-btn" onclick="removeSponsor(${i})">✕</button>
+      </div>`;
+  }).join('');
+}
+function addSponsor() {
+  if(!config.sponsors) config.sponsors = [];
+  config.sponsors.push({ name:'', url:'', logo:'', type:'sponsor', year:0 });
+  buildSponsorList();
+}
+function updateSponsor(i, key, val) {
+  config.sponsors[i][key] = val;
+}
+function removeSponsor(i) {
+  config.sponsors.splice(i, 1);
+  buildSponsorList();
+}
+function triggerSponsorLogo(i) {
+  currentSponsorIdx = i;
+  document.getElementById('sponsorLogoInput').click();
+}
+function handleSponsorLogo(event) {
+  const file = event.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    config.sponsors[currentSponsorIdx].logo = e.target.result;
+    buildSponsorList();
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+// ══════════════ COLLECT & SAVE ══════════════
+function collectForm() {
+  if(!config.site) config.site = {};
+  config.site.eyebrow     = document.getElementById('cfg_eyebrow').value;
+  config.site.subtitle    = document.getElementById('cfg_subtitle').value;
+  config.site.bgImage     = document.getElementById('cfg_bgImage').value || config.site.bgImage || '';
+  config.site.bgOverlay   = parseFloat(document.getElementById('cfg_bgOverlay').value) || 0.6;
+  config.site.displayFont = document.getElementById('cfg_displayFont').value;
+  config.site.bodyFont    = document.getElementById('cfg_bodyFont').value;
+  COLOR_DEFS.forEach(d => {
+    config.site[d.key] = document.getElementById(`cp_${d.key}`).value;
+  });
+}
+
+async function saveConfig() {
+  collectForm();
+
+  const token = prompt('GitHub Personal Access Token (ghp_...)을 입력하세요:\n\n(처음 한 번만 입력하면 세션 동안 저장됩니다)');
+  if(!token) return;
+  ghToken = token;
+
+  const btn = document.getElementById('saveBtn');
+  const status = document.getElementById('saveStatus');
+  btn.disabled = true;
+  status.className = 'save-status';
+  status.textContent = '저장 중...';
+
+  try {
+    // 1. 현재 파일 SHA 가져오기
+    const getRes = await fetch(
+      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${CONFIG_PATH}`,
+      { headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github.v3+json' } }
+    );
+    const getJson = await getRes.json();
+    const sha = getJson.sha;
+
+    // 2. 파일 업데이트
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(config, null, 2))));
+    const putRes = await fetch(
+      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${CONFIG_PATH}`,
+      {
+        method: 'PUT',
+        headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Update config via admin', content, sha })
+      }
+    );
+
+    if(putRes.ok) {
+      status.className = 'save-status success';
+      status.textContent = '✅ 저장 완료! 1~2분 후 사이트에 반영됩니다.';
+    } else {
+      const err = await putRes.json();
+      throw new Error(err.message);
+    }
+  } catch(e) {
+    status.className = 'save-status error';
+    status.textContent = '❌ 오류: ' + e.message;
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
