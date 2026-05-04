@@ -1,6 +1,5 @@
 const { Client } = require('@notionhq/client');
 const fs = require('fs');
-const path = require('path');
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 const dbId = process.env.NOTION_DB_ID;
@@ -9,13 +8,13 @@ function getProp(page, name, type) {
   const prop = page.properties[name];
   if (!prop) return '';
   switch (type) {
-    case 'title': return prop.title?.[0]?.plain_text || '';
-    case 'text':  return prop.rich_text?.[0]?.plain_text || '';
-    case 'number': return prop.number || 0;
-    case 'select': return prop.select?.name || '';
-    case 'url':   return prop.url || '';
+    case 'title':    return prop.title?.[0]?.plain_text || '';
+    case 'text':     return prop.rich_text?.[0]?.plain_text || '';
+    case 'number':   return prop.number || 0;
+    case 'select':   return prop.select?.name || '';
+    case 'url':      return prop.url || '';
     case 'checkbox': return prop.checkbox || false;
-    default: return '';
+    default:         return '';
   }
 }
 
@@ -42,16 +41,18 @@ const DIV_MAP = {
 
 async function main() {
   console.log('Fetching Notion data...');
-
   const awards = [];
   let cursor = undefined;
 
   while (true) {
     const res = await notion.databases.query({
       database_id: dbId,
-      filter: { property: '공개여부', checkbox: { equals: true } },
+      filter: {
+        property: '공개여부',
+        checkbox: { equals: true }
+      },
       sorts: [{ property: '연도', direction: 'descending' }],
-      start_cursor: cursor,
+      ...(cursor ? { start_cursor: cursor } : {}),
       page_size: 100,
     });
 
@@ -59,21 +60,21 @@ async function main() {
       const catRaw = getProp(page, '수상부문', 'select');
       const divRaw = getProp(page, '전시부문', 'select');
       awards.push({
-        id: page.id,
-        gameKo:    getProp(page, '게임명_KR', 'title'),
-        gameEn:    getProp(page, '게임명_EN', 'text'),
-        year:      getProp(page, '연도', 'number'),
-        division:  DIV_MAP[divRaw] || '',
-        catId:     CAT_MAP[catRaw] || '',
-        catKo:     catRaw,
-        type:      getProp(page, '카드타입', 'select'),
-        studio:    getProp(page, '스튜디오_KR', 'text'),
-        studioEn:  getProp(page, '스튜디오_EN', 'text'),
-        country:   getProp(page, '국가', 'text'),
-        descKo:    getProp(page, '한줄평_KR', 'text'),
-        descEn:    getProp(page, '한줄평_EN', 'text'),
-        img:       getProp(page, '이미지_URL', 'url'),
-        steam:     getProp(page, '스팀링크', 'url'),
+        id:       page.id,
+        gameKo:   getProp(page, '게임명_KR', 'title'),
+        gameEn:   getProp(page, '게임명_EN', 'text'),
+        year:     getProp(page, '연도', 'number'),
+        division: DIV_MAP[divRaw] || '',
+        catId:    CAT_MAP[catRaw] || '',
+        catKo:    catRaw,
+        type:     getProp(page, '카드타입', 'select'),
+        studio:   getProp(page, '스튜디오_KR', 'text'),
+        studioEn: getProp(page, '스튜디오_EN', 'text'),
+        country:  getProp(page, '국가', 'text'),
+        descKo:   getProp(page, '한줄평_KR', 'text'),
+        descEn:   getProp(page, '한줄평_EN', 'text'),
+        img:      getProp(page, '이미지_URL', 'url'),
+        steam:    getProp(page, '스팀링크', 'url'),
       });
     }
 
@@ -83,15 +84,11 @@ async function main() {
 
   console.log(`Fetched ${awards.length} awards`);
 
-  // public 폴더 생성
   if (!fs.existsSync('public')) fs.mkdirSync('public');
-
-  // data.json 저장
   fs.writeFileSync(
     'public/data.json',
     JSON.stringify({ awards, updatedAt: new Date().toISOString() }, null, 2)
   );
-
   console.log('Saved to public/data.json');
 }
 
