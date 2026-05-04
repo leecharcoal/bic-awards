@@ -2,8 +2,8 @@ name: Sync Notion to GitHub Pages
 
 on:
   schedule:
-    - cron: '0 * * * *'  # 매 1시간마다 자동 실행
-  workflow_dispatch:       # 수동 실행 버튼도 생성
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -18,7 +18,9 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install @notionhq/client
+        run: |
+          npm init -y
+          npm install @notionhq/client@2.2.15
 
       - name: Fetch Notion data
         env:
