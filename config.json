@@ -8,22 +8,23 @@
     "bgColor": "#080810",
     "displayFont": "'Bebas Neue','Black Han Sans',sans-serif",
     "bodyFont": "'Noto Sans KR',sans-serif",
-    "bgImage": ""
+    "bgImage": "",
+    "bgOverlay": 0.6
   },
   "categories": {
-    "grand-prix":   { "emblem": "" },
-    "jury-general": { "emblem": "" },
-    "rising-star":  { "emblem": "" },
-    "jury-rookie":  { "emblem": "" },
-    "art":          { "emblem": "" },
-    "design":       { "emblem": "" },
-    "experimental": { "emblem": "" },
-    "narrative":    { "emblem": "" },
-    "casual":       { "emblem": "" },
-    "esports":      { "emblem": "" },
-    "audio":        { "emblem": "" },
-    "social":       { "emblem": "" },
-    "action":       { "emblem": "" }
+    "grand-prix":        { "emblem": "", "emblemRookie": "" },
+    "jury-general":      { "emblem": "", "emblemRookie": "" },
+    "rising-star":       { "emblem": "", "emblemRookie": "" },
+    "jury-rookie":       { "emblem": "", "emblemRookie": "" },
+    "art":               { "emblem": "", "emblemRookie": "" },
+    "design":            { "emblem": "", "emblemRookie": "" },
+    "experimental":      { "emblem": "", "emblemRookie": "" },
+    "narrative":         { "emblem": "", "emblemRookie": "" },
+    "casual":            { "emblem": "", "emblemRookie": "" },
+    "esports":           { "emblem": "", "emblemRookie": "" },
+    "audio":             { "emblem": "", "emblemRookie": "" },
+    "social":            { "emblem": "", "emblemRookie": "" },
+    "action":            { "emblem": "", "emblemRookie": "" }
   },
   "sponsors": []
 }
