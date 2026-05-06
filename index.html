@@ -122,8 +122,9 @@ main{max-width:1280px;margin:0 auto;padding:40px 48px 80px;}
 .award-studio{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 .country-badge{padding:1px 7px;background:var(--surface3);border:1px solid var(--border);border-radius:2px;font-size:10px;letter-spacing:1px;}
 .award-desc{font-size:12px;color:var(--text-muted);line-height:1.55;padding-top:8px;border-top:1px solid var(--border);margin-top:auto;}
-.steam-link-text{display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-family:var(--font-mono);font-size:10px;color:#66c0f4;text-decoration:none;letter-spacing:1px;transition:opacity .2s;}
-.steam-link-text:hover{opacity:.7;}
+.steam-link-text,.market-link-text{display:inline-flex;align-items:center;gap:4px;margin-top:6px;margin-right:8px;font-family:var(--font-mono);font-size:10px;color:#66c0f4;text-decoration:none;letter-spacing:1px;transition:opacity .2s;}
+.steam-link-text:hover,.market-link-text:hover{opacity:.7;}
+.market-links-wrap{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;}
 .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;animation:fadeUp .35s ease both;}
 .cat-section-header{font-family:var(--font-display);font-size:28px;letter-spacing:3px;color:var(--text-muted);margin:32px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
 .cat-section-header:first-child{margin-top:0;}
@@ -221,6 +222,8 @@ const categories=[
   {id:'audio',nameKo:'오디오',nameEn:'Excellence in Audio',emoji:'🎵',color:'#22d3ee',descKo:'음악, 사운드, 효과음 등 청각적 요소가 가장 우수한 작품',descEn:'Outstanding audio design.'},
   {id:'social',nameKo:'소셜임팩트',nameEn:'Excellence in Social Impact',emoji:'🌍',color:'#fb923c',descKo:'사회적 문제나 문화적 가치를 드높인 작품',descEn:'Elevating social issues through play.'},
   {id:'action',nameKo:'액션',nameEn:'Excellence in Action',emoji:'⚔️',color:'#ff2d55',descKo:'타격감, 박진감 및 이펙트 효과가 우수한 작품',descEn:'Outstanding action gameplay.'},
+  {id:'booth',nameKo:'베스트 부스',nameEn:'Best Booth',emoji:'🏗️',color:'#94a3b8',descKo:'가장 인상적인 부스를 선보인 작품 (2017년 한정)',descEn:'Best booth presentation (2017 only)',legacy:true},
+  {id:'audience',nameKo:'관객심사',nameEn:'Audience Choice',emoji:'👏',color:'#facc15',descKo:'관객이 직접 선정한 수상작 (2015년 한정)',descEn:'Award chosen by the audience (2015 only)',legacy:true},
 ];
 let lang='ko',currentView='year',filterYear='all',filterDiv='all',selectedCatId=null;
 let awardsData=[],siteConfig={};
@@ -274,6 +277,8 @@ function applyConfig(){
     'audio':        { general: 'audio.png',          rookie: 'audio-rookie.png' },
     'social':       { general: 'social.png',         rookie: 'social-rookie.png' },
     'action':       { general: 'action.png',         rookie: 'action-rookie.png' },
+    'booth':        { general: '', rookie: '' },
+    'audience':     { general: '', rookie: '' },
   };
   categories.forEach(cat=>{
     const cfgEmb  = siteConfig.categories?.[cat.id]?.emblem;
@@ -380,7 +385,47 @@ function renderYearView(){
     else awards.forEach(a=>grid.appendChild(buildCard(a)));
   });
 }
-const steamSvg=`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.606 0 11.979 0z"/></svg>`;
+const steamSvg=`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.527h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.606 0 11.979 0z"/></svg>`;
+
+function detectMarket(url) {
+  if(!url) return null;
+  const u = url.toLowerCase();
+  if(u.includes('steampowered.com')) return {
+    label:'STEAM', color:'#66c0f4',
+    icon:`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.606 0 11.979 0z"/></svg>`
+  };
+  if(u.includes('itch.io')) return {
+    label:'ITCH.IO', color:'#fa5c5c',
+    icon:`<svg width="12" height="12" viewBox="0 0 245 220" fill="currentColor"><path d="M31.99 3.06C21.17 9.29 0 39.81 0 46.5v9.31c0 16.16 15.12 30.41 28.86 30.41 16.48 0 30.24-13.76 30.24-30.24 0 16.48 13.52 30.24 30 30.24s30-13.76 30-30.24c0 16.48 13.52 30.24 30 30.24s30-13.76 30-30.24c0 16.48 13.76 30.24 30.24 30.24C223.08 86.22 238 71.97 238 55.81V46.5c0-6.69-21.17-37.21-31.99-43.44C185.24-.21 59.76-.21 31.99 3.06zM83 100.67c-7.96 1.16-14.72 4.45-21 10.08-5.4 4.78-7 7.44-12.58 20.87C35.9 163.87 32.34 194.5 44 205.5c5.81 5.49 8.88 5.5 78.5 5.5s72.69-.01 78.5-5.5c11.69-11.02 8.08-41.69-5.44-73.88-5.56-13.43-7.18-16.09-12.58-20.87-8.07-7.14-17.51-10.46-29.98-10.53L144 100.1l-3.26 7.45c-4.21 9.63-7.55 12.56-15.24 13.39-8.63.93-13.38-1.69-18.5-10.16L104 104l-9.5-.08c-5.22-.04-10.14.27-11.5.75z"/></svg>`
+  };
+  if(u.includes('onstove.com')) return {
+    label:'STOVE', color:'#00c4b4',
+    icon:`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="12"/></svg>`
+  };
+  if(u.includes('play.google.com')) return {
+    label:'GOOGLE PLAY', color:'#34a853',
+    icon:`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76a2 2 0 001.94-.21l11.29-6.52-2.5-2.5-10.73 9.23zM.5 1.1A2 2 0 000 2.5v19a2 2 0 00.5 1.4L.6 23l10.64-10.64v-.25L.6 1.1zM20.32 10.32l-2.85-1.65-2.82 2.83 2.82 2.82 2.87-1.66a2 2 0 000-3.34zM5.12.45L16.41 6.97l-2.5 2.5L3.18.24A2 2 0 005.12.45z"/></svg>`
+  };
+  if(u.includes('apps.apple.com') || u.includes('apple.com/app')) return {
+    label:'APP STORE', color:'#007aff',
+    icon:`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>`
+  };
+  return {
+    label:'STORE', color:'#a0a0b0',
+    icon:`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6H17.93A6 6 0 006.07 6H5a3 3 0 00-3 3v9a3 3 0 003 3h14a3 3 0 003-3V9a3 3 0 00-3-3zm-7-4a4 4 0 014 4H8a4 4 0 014-4zm7 16H5a1 1 0 01-1-1V9a1 1 0 011-1h14a1 1 0 011 1v9a1 1 0 01-1 1z"/></svg>`
+  };
+}
+
+function buildMarketLinks(steam, market) {
+  const links = [];
+  if(steam) links.push(steam.trim());
+  if(market) market.split(',').forEach(u => { const t=u.trim(); if(t) links.push(t); });
+  return links.map(url => {
+    const m = detectMarket(url);
+    if(!m) return '';
+    return `<a class="market-link-text" href="${url}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:${m.color}">${m.icon} ${m.label}</a>`;
+  }).join('');
+}
 function buildCard(a){
   const div=document.createElement('div');
   div.className='award-card'+(a.type?' '+a.type:'');
@@ -398,7 +443,12 @@ function buildCard(a){
     :`<div class="card-image-placeholder">${(lang==='ko'?a.gameKo:a.gameEn).slice(0,2).toUpperCase()}</div>`;
   div.innerHTML=`
     <div class="card-image">${imgContent}
-      ${a.steam?`<a class="steam-badge" href="${a.steam}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${steamSvg}STEAM</a>`:''}
+      ${(()=>{
+        const firstUrl = a.steam || (a.market ? a.market.split(',')[0].trim() : '');
+        if(!firstUrl) return '';
+        const m = detectMarket(firstUrl);
+        return `<a class="steam-badge" href="${firstUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:${m.color}">${m.icon} ${m.label}</a>`;
+      })()}
     </div>
     <div class="card-strip"></div>
     <div class="card-body">
@@ -409,7 +459,7 @@ function buildCard(a){
       <div class="award-game">${lang==='ko'?a.gameKo:a.gameEn}</div>
       <div class="award-studio">${a.studio||a.studioEn||''}${a.country?`<span class="country-badge">${a.country}</span>`:''}</div>
       ${(lang==='ko'?a.descKo:a.descEn)?`<div class="award-desc">${lang==='ko'?a.descKo:a.descEn}</div>`:''}
-      ${a.steam?`<a class="steam-link-text" href="${a.steam}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${steamSvg}${lang==='ko'?'스팀에서 보기':'View on Steam'}</a>`:''}
+      ${buildMarketLinks(a.steam, a.market)}
     </div>`;
   return div;
 }
@@ -419,6 +469,7 @@ function renderCategoryView(){
   const groups=[
     {label:{ko:'최고상',en:'TOP AWARDS'},ids:['grand-prix','jury-general','rising-star','jury-rookie']},
     {label:{ko:'공통 어워드 부문',en:'AWARD CATEGORIES'},ids:['art','design','experimental','narrative','casual','esports','audio','social','action']},
+    {label:{ko:'과거 수상 부문',en:'PAST CATEGORIES'},ids:['booth','audience']},
   ];
   groups.forEach(g=>{
     const hdr=document.createElement('div');
