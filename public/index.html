@@ -153,6 +153,18 @@ main{max-width:1280px;margin:0 auto;padding:40px 48px 80px;}
 footer{border-top:1px solid var(--border);padding:20px 48px;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:2px;}
 footer a{color:var(--accent);text-decoration:none;}
 
+/* SEARCH BAR */
+.search-bar{padding:16px 48px;border-bottom:1px solid var(--border);background:var(--surface);position:relative;z-index:2;}
+.search-bar-inner{max-width:1280px;margin:0 auto;position:relative;}
+.search-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font-body);font-size:14px;padding:12px 44px 12px 44px;outline:none;transition:all .2s;letter-spacing:.3px;}
+.search-input:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(255,45,85,.12);}
+.search-input::placeholder{color:var(--text-muted);}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text-muted);pointer-events:none;}
+.search-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:50%;background:var(--surface3);border:none;color:var(--text-muted);cursor:pointer;font-size:12px;display:none;align-items:center;justify-content:center;transition:all .2s;}
+.search-clear:hover{background:var(--accent);color:#fff;}
+.search-clear.visible{display:flex;}
+.search-result-info{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-top:8px;height:14px;transition:opacity .2s;}
+
 /* FLOATING WIDGET */
 .float-widget{position:fixed;bottom:32px;right:28px;display:flex;flex-direction:column;align-items:flex-end;gap:8px;z-index:500;}
 .float-year-list{display:flex;flex-direction:column;gap:6px;align-items:flex-end;
@@ -225,6 +237,18 @@ footer a{color:var(--accent);text-decoration:none;}
     <button class="view-tab" id="tabCat" onclick="setView('category')"><span data-ko="부문별 보기" data-en="By Category">부문별 보기</span></button>
   </div>
 </div>
+<!-- SEARCH BAR -->
+<div class="search-bar" id="searchBar">
+  <div class="search-bar-inner">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="searchInput"
+      placeholder="게임명, 개발사, 국가 검색... / Search games, studios, countries..."
+      oninput="handleSearch(this.value)">
+    <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+    <div class="search-result-info" id="searchResultInfo"></div>
+  </div>
+</div>
+
 <div class="year-nav" id="yearNavBar"><div class="year-nav-inner" id="yearNav"></div></div>
 <div class="division-filter" id="divisionBar">
   <div class="division-filter-inner">
@@ -411,6 +435,8 @@ function renderYearView(){
     let awards=awardsData.filter(a=>a.year===yr);
     if(filterDiv==='general') awards=awards.filter(a=>a.division==='general');
     else if(filterDiv==='rookie') awards=awards.filter(a=>a.division==='rookie');
+    if(searchQuery) awards=awards.filter(a=>matchSearch(a));
+    if(searchQuery && !awards.length) return; // 검색 결과 없으면 연도 섹션 숨김
     const sec=document.createElement('div');
     sec.className='year-section';
     sec.innerHTML=`
@@ -550,7 +576,7 @@ function renderCatDetailView(){
   main.innerHTML='';
   const cat=categories.find(c=>c.id===selectedCatId);
   if(!cat){setView('category');return;}
-  const allAwards=awardsData.filter(a=>a.catId===selectedCatId).sort((a,b)=>b.year-a.year);
+  const allAwards=awardsData.filter(a=>a.catId===selectedCatId&&matchSearch(a)).sort((a,b)=>b.year-a.year);
   const emblemInner=cat.emblemImg?`<img src="${cat.emblemImg}" alt="${cat.nameKo}">`:`${cat.emoji}`;
   const hdr=document.createElement('div');
   hdr.className='cat-detail-header';
@@ -574,6 +600,45 @@ function renderCatDetailView(){
     byYear[yr].forEach(a=>document.getElementById(`cg-${yr}`).appendChild(buildCard(a)));
   });
 }
+// ══════════ SEARCH ══════════
+let searchQuery = '';
+
+function handleSearch(val) {
+  searchQuery = val.trim().toLowerCase();
+  document.getElementById('searchClear').classList.toggle('visible', searchQuery.length > 0);
+  renderMain();
+  updateSearchInfo();
+}
+
+function clearSearch() {
+  searchQuery = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').classList.remove('visible');
+  document.getElementById('searchResultInfo').textContent = '';
+  renderMain();
+}
+
+function updateSearchInfo() {
+  const info = document.getElementById('searchResultInfo');
+  if(!searchQuery) { info.textContent = ''; return; }
+  const matched = awardsData.filter(a => matchSearch(a)).length;
+  info.textContent = lang==='ko'
+    ? `"${searchQuery}" 검색 결과 ${matched}개`
+    : `${matched} result(s) for "${searchQuery}"`;
+}
+
+function matchSearch(a) {
+  if(!searchQuery) return true;
+  const q = searchQuery;
+  const fields = [
+    a.gameKo, a.gameEn, a.studio, a.studioEn,
+    a.country, a.catKo,
+    categories.find(c=>c.id===a.catId)?.nameKo || '',
+    categories.find(c=>c.id===a.catId)?.nameEn || '',
+  ];
+  return fields.some(f => f && f.toLowerCase().includes(q));
+}
+
 // ══════════ FLOATING WIDGET ══════════
 let floatOpen = false;
 
