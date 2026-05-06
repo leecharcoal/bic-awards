@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="favicon.png" type="image/png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BIC Awards Archive</title>
 <meta name="description" content="부산 인디 커넥트 페스티벌 역대 수상작 아카이브">
@@ -45,7 +46,7 @@ header::before{content:'AWARDS';position:absolute;right:-10px;top:-20px;font-fam
 .header-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
 .lang-toggle{display:flex;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
 .lang-btn{padding:8px 18px;background:none;border:none;color:var(--text-muted);font-family:var(--font-mono);font-size:12px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
-.lang-btn.active{background:var(--accent);color:#fff;}
+.lang-btn.active{background:var(--accent);color:#000 !important;}
 .updated-at{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;}
 .sponsors-bar{padding:12px 48px;border-bottom:1px solid var(--border);display:none;}
 .sponsors-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
@@ -63,20 +64,20 @@ header::before{content:'AWARDS';position:absolute;right:-10px;top:-20px;font-fam
 .view-tab{padding:10px 28px;border:1px solid var(--border);background:none;color:var(--text-muted);font-family:var(--font-mono);font-size:12px;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
 .view-tab:first-child{border-radius:var(--radius) 0 0 var(--radius);}
 .view-tab:last-child{border-radius:0 var(--radius) var(--radius) 0;border-left:none;}
-.view-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.view-tab.active{background:var(--accent);border-color:var(--accent);color:#000 !important;}
 .year-nav{padding:18px 48px;border-bottom:1px solid var(--border);}
 .year-nav-inner{max-width:1280px;margin:0 auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
 .year-label{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:2px;margin-right:6px;text-transform:uppercase;}
 .year-btn{padding:5px 12px;background:none;border:1px solid var(--border);border-radius:3px;color:var(--text-muted);font-family:var(--font-mono);font-size:12px;cursor:pointer;transition:all .2s;}
 .year-btn:hover{border-color:var(--accent);color:var(--accent);}
-.year-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
-.year-btn.all.active{background:var(--accent3);border-color:var(--accent3);color:#000;}
+.year-btn.active{background:var(--accent);border-color:var(--accent);color:#000 !important;}
+.year-btn.all.active{background:var(--accent3);border-color:var(--accent3);color:#000 !important;}
 .division-filter{padding:12px 48px;border-bottom:1px solid var(--border);background:var(--surface);}
 .division-filter-inner{max-width:1280px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
 .div-label{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-right:4px;}
 .div-btn{padding:4px 14px;background:none;border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-family:var(--font-mono);font-size:11px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
 .div-btn:hover{border-color:var(--accent2);color:var(--accent2);}
-.div-btn.active{background:var(--accent2);border-color:var(--accent2);color:#000;font-weight:700;}
+.div-btn.active{background:var(--accent2);border-color:var(--accent2);color:#000 !important;font-weight:700;}
 .div-badge-general{display:inline-flex;align-items:center;padding:2px 8px;background:rgba(255,208,0,.12);border:1px solid rgba(255,208,0,.3);border-radius:20px;font-family:var(--font-mono);font-size:9px;color:var(--accent2);letter-spacing:1px;}
 .div-badge-rookie{display:inline-flex;align-items:center;padding:2px 8px;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.25);border-radius:20px;font-family:var(--font-mono);font-size:9px;color:var(--accent3);letter-spacing:1px;}
 main{max-width:1280px;margin:0 auto;padding:40px 48px 80px;}
@@ -174,7 +175,7 @@ footer a{color:var(--accent);text-decoration:none;}
 .filter-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1;}
 .filter-chip{display:flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid var(--border);border-radius:20px;background:none;color:var(--text-muted);font-family:var(--font-mono);font-size:11px;cursor:pointer;transition:all .2s;letter-spacing:1px;user-select:none;}
 .filter-chip:hover{border-color:var(--accent);color:var(--accent);}
-.filter-chip.active{background:var(--accent);border-color:var(--accent);color:var(--chip-text,#fff);filter:none;}
+.filter-chip.active{background:var(--accent);border-color:var(--accent);color:#000 !important;}
 .filter-chip input[type="checkbox"]{display:none;}
 .filter-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:4px;border-top:1px solid var(--border);}
 .filter-reset-btn{padding:5px 14px;background:none;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-family:var(--font-mono);font-size:10px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
@@ -733,9 +734,7 @@ function buildFilterPanel() {
       <div class="filter-chips">
         ${ALL_YEARS_LIST.map(y => {
           const isActive = activeFilters.years.has(y);
-          const accentHex = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-          const txtColor = isActive && accentHex.startsWith('#') && getLuminance(accentHex) > 140 ? '#000000' : '#ffffff';
-          return `<label class="filter-chip ${isActive?'active':''}" style="${isActive?'color:'+txtColor:''}">
+          return `<label class="filter-chip ${isActive?'active':''}">
             <input type="checkbox" ${isActive?'checked':''} onchange="toggleFilter('years',${y},this.checked)">
             ${y}
           </label>`;
@@ -747,9 +746,7 @@ function buildFilterPanel() {
       <div class="filter-chips">
         ${DIVISION_LIST.map(d => {
           const isActive = activeFilters.divisions.has(d.id);
-          const accentHex = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-          const txtColor = isActive && accentHex.startsWith('#') && getLuminance(accentHex) > 140 ? '#000000' : '#ffffff';
-          return `<label class="filter-chip ${isActive?'active':''}" style="${isActive?'color:'+txtColor:''}">
+          return `<label class="filter-chip ${isActive?'active':''}">
             <input type="checkbox" ${isActive?'checked':''} onchange="toggleFilter('divisions','${d.id}',this.checked)">
             ${lang==='ko'?d.ko:d.en}
           </label>`;
@@ -761,9 +758,7 @@ function buildFilterPanel() {
       <div class="filter-chips">
         ${AWARD_LIST.map(a => {
           const isActive = activeFilters.awards.has(a.id);
-          const accentHex = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-          const txtColor = isActive && accentHex.startsWith('#') && getLuminance(accentHex) > 140 ? '#000000' : '#ffffff';
-          return `<label class="filter-chip ${isActive?'active':''}" style="${isActive?'color:'+txtColor:''}">
+          return `<label class="filter-chip ${isActive?'active':''}">
             <input type="checkbox" ${isActive?'checked':''} onchange="toggleFilter('awards','${a.id}',this.checked)">
             ${lang==='ko'?a.ko:a.en}
           </label>`;
