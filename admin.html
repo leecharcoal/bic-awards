@@ -179,6 +179,17 @@ input[type="color"]{width:36px;height:36px;border:1px solid var(--border);border
           <input class="form-input" id="cfg_eyebrow" placeholder="부산 인디 커넥트 페스티벌">
         </div>
         <div class="form-group">
+          <label class="form-label">BIC 타이틀 컬러 (로고에서 "BIC" 글자 색상)</label>
+          <div class="color-row" style="margin:0">
+            <div class="color-swatch" id="sw_bicColor" style="background:#ffffff"></div>
+            <span class="color-name">BIC 글자 색상</span>
+            <div class="color-input-wrap">
+              <input type="color" id="tc_bicColor" value="#ffffff" oninput="syncColor('bicColor',this.value)">
+              <input class="color-hex" id="ch_bicColor" value="#ffffff" oninput="syncColorHex('bicColor',this.value)">
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
           <label class="form-label">Subtitle (하단 부제)</label>
           <input class="form-input" id="cfg_subtitle" placeholder="역대 수상작 아카이브 / All-Time Award Archive">
         </div>
@@ -415,6 +426,10 @@ async function loadConfig() {
 function populateForm() {
   const s = config.site || {};
   document.getElementById('cfg_eyebrow').value        = s.eyebrow || '';
+  const bicCol = s.bicColor || '#ffffff';
+  document.getElementById('tc_bicColor').value = bicCol;
+  document.getElementById('ch_bicColor').value = bicCol;
+  document.getElementById('sw_bicColor').style.background = bicCol;
   document.getElementById('cfg_subtitle').value       = s.subtitle || '';
   document.getElementById('cfg_sponsorsLabel').value  = s.sponsorsLabel || '';
   const st = s.stats || [];
@@ -448,6 +463,7 @@ function populateForm() {
 
 // ══════════════ COLORS ══════════════
 const COLOR_DEFS = [
+  { key:'bicColor',     label:'BIC 타이틀 글자 색상' },
   { key:'primaryColor', label:'Primary 포인트 컬러' },
   { key:'accentColor',  label:'Accent 강조 컬러 (통계/버튼)' },
   { key:'subColor',     label:'Sub 보조 컬러 (카테고리)' },
@@ -640,6 +656,7 @@ function handleSponsorLogo(event) {
 function collectForm() {
   if(!config.site) config.site = {};
   config.site.eyebrow        = document.getElementById('cfg_eyebrow').value;
+  config.site.bicColor       = document.getElementById('tc_bicColor').value;
   config.site.subtitle       = document.getElementById('cfg_subtitle').value;
   config.site.sponsorsLabel  = document.getElementById('cfg_sponsorsLabel').value;
   config.site.stats = [

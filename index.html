@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<link rel="icon" href="favicon.png" type="image/png">  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BIC Awards Archive</title>
@@ -231,7 +230,7 @@ footer a{color:var(--accent);text-decoration:none;}
   <div class="header-inner">
     <div class="logo-block">
       <div class="logo-eyebrow" id="hdrEyebrow">부산 인디 커넥트 페스티벌</div>
-      <div class="logo-title">BIC <em>AWARDS</em></div>
+      <div class="logo-title"><span id="bicTitle">BIC</span> <em>AWARDS</em></div>
       <div class="logo-sub" id="hdrSubtitle">역대 수상작 아카이브 / All-Time Award Archive</div>
     </div>
     <div class="header-controls">
@@ -352,6 +351,10 @@ function applyConfig(){
   if(s.bodyFont)    {r.setProperty('--font-body',s.bodyFont);document.body.style.fontFamily=s.bodyFont;}
   if(s.eyebrow)  document.getElementById('hdrEyebrow').textContent=s.eyebrow;
   if(s.subtitle) document.getElementById('hdrSubtitle').textContent=s.subtitle;
+  if(s.bicColor) {
+    const bicEl = document.getElementById('bicTitle');
+    if(bicEl) bicEl.style.color = s.bicColor;
+  }
   if(s.bgImage){
     document.getElementById('bgImage').style.backgroundImage=`url('${s.bgImage}')`;
     document.getElementById('bgOverlay').style.background=`rgba(0,0,0,${s.bgOverlay??0.6})`;
