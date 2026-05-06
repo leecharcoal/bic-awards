@@ -381,7 +381,7 @@
     {
       "id": "356ba164-0017-81bb-9af1-f0a403b061b6",
       "gameKo": "With My Past",
-      "gameEn": "위드 마이 페스트",
+      "gameEn": "With My Past",
       "year": 2024,
       "division": "rookie",
       "catId": "",
@@ -471,7 +471,7 @@
     {
       "id": "356ba164-0017-8167-8889-c2afb2584764",
       "gameKo": "With My Past",
-      "gameEn": "위드 마이 페스트",
+      "gameEn": "With My Past",
       "year": 2024,
       "division": "rookie",
       "catId": "narrative",
@@ -507,7 +507,7 @@
     {
       "id": "356ba164-0017-8171-a16a-db1af7af1ffc",
       "gameKo": "With My Past",
-      "gameEn": "위드 마이 페스트",
+      "gameEn": "With My Past",
       "year": 2024,
       "division": "rookie",
       "catId": "audio",
@@ -687,7 +687,7 @@
     {
       "id": "356ba164-0017-8199-8d10-fdcf93a8c275",
       "gameKo": "GREAT TOY SHOWDOWN",
-      "gameEn": "그레잇 토이 쇼다운",
+      "gameEn": "GREAT TOY SHOWDOWN",
       "year": 2024,
       "division": "general",
       "catId": "esports",
@@ -723,7 +723,7 @@
     {
       "id": "356ba164-0017-81d2-be6d-f1003aefe1f2",
       "gameKo": "KAGE~Shadow of the Ninja - Reborn",
-      "gameEn": "카제~쉐도우 오브 더 닌자 리본",
+      "gameEn": "KAGE~Shadow of the Ninja - Reborn",
       "year": 2024,
       "division": "general",
       "catId": "action",
@@ -1137,7 +1137,7 @@
     {
       "id": "358ba164-0017-811a-8333-f90786ed3838",
       "gameKo": "Pa!nt",
-      "gameEn": "페인트",
+      "gameEn": "Pa!nt",
       "year": 2022,
       "division": "rookie",
       "catId": "casual",
@@ -2755,5 +2755,5 @@
       "market": ""
     }
   ],
-  "updatedAt": "2026-05-06T06:19:47.461Z"
+  "updatedAt": "2026-05-06T06:29:21.370Z"
 }
