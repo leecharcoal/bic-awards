@@ -90,21 +90,21 @@ main{max-width:1280px;margin:0 auto;padding:40px 48px 80px;}
 .awards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
 .award-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;position:relative;transition:all .25s;display:flex;flex-direction:column;}
 .award-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 12px 40px rgba(255,45,85,.18);}
-.award-card.grand-prix{border-color:rgba(255,215,0,.25);}
-.award-card.grand-prix:hover{border-color:var(--grand);box-shadow:0 12px 40px rgba(255,215,0,.2);}
-.award-card.rising-star{border-color:rgba(0,229,255,.2);}
-.award-card.rising-star:hover{border-color:var(--rising);box-shadow:0 12px 40px rgba(0,229,255,.18);}
-.award-card.jury-prize{border-color:rgba(192,132,252,.2);}
-.award-card.jury-prize:hover{border-color:var(--jury);box-shadow:0 12px 40px rgba(192,132,252,.18);}
+.award-card.grand-prix{border-color:rgba(255,215,0,.6);background:linear-gradient(160deg,rgba(255,215,0,.08) 0%,var(--surface) 60%);}
+.award-card.grand-prix:hover{border-color:var(--grand);box-shadow:0 12px 48px rgba(255,215,0,.35);}
+.award-card.rising-star{border-color:rgba(0,229,255,.5);background:linear-gradient(160deg,rgba(0,229,255,.07) 0%,var(--surface) 60%);}
+.award-card.rising-star:hover{border-color:var(--rising);box-shadow:0 12px 48px rgba(0,229,255,.3);}
+.award-card.jury-prize{border-color:rgba(192,132,252,.5);background:linear-gradient(160deg,rgba(192,132,252,.07) 0%,var(--surface) 60%);}
+.award-card.jury-prize:hover{border-color:var(--jury);box-shadow:0 12px 48px rgba(192,132,252,.3);}
 .card-image{width:100%;height:160px;background:var(--surface2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0;}
 .card-image img{width:100%;height:100%;object-fit:cover;display:block;}
 .card-image-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:52px;color:rgba(255,255,255,.05);}
 .steam-badge{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.82);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:#c7d5e0;text-decoration:none;letter-spacing:1px;transition:all .2s;z-index:5;display:flex;align-items:center;gap:4px;}
 .steam-badge:hover{background:#1b2838;border-color:#66c0f4;color:#66c0f4;}
 .card-strip{height:3px;width:100%;background:var(--border);flex-shrink:0;}
-.award-card.grand-prix .card-strip{background:var(--grand);}
-.award-card.rising-star .card-strip{background:var(--rising);}
-.award-card.jury-prize .card-strip{background:var(--jury);}
+.award-card.grand-prix .card-strip{background:var(--grand);height:4px;}
+.award-card.rising-star .card-strip{background:var(--rising);height:4px;}
+.award-card.jury-prize .card-strip{background:var(--jury);height:4px;}
 .award-card:not(.grand-prix):not(.rising-star):not(.jury-prize) .card-strip{background:var(--accent);opacity:.5;}
 .card-body{padding:16px;display:flex;flex-direction:column;gap:5px;flex:1;}
 .card-top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:2px;}
@@ -117,8 +117,9 @@ main{max-width:1280px;margin:0 auto;padding:40px 48px 80px;}
 .award-card.jury-prize .cat-dot{background:var(--jury);opacity:1;}
 .award-card.jury-prize .award-category{color:rgba(192,132,252,.8);}
 .award-game{font-weight:700;font-size:14px;line-height:1.35;color:var(--text);}
-.award-card.grand-prix .award-game{color:var(--grand);font-size:16px;}
-.award-card.rising-star .award-game{font-size:15px;}
+.award-card.grand-prix .award-game{color:var(--grand);font-size:16px;font-weight:800;}
+.award-card.rising-star .award-game{color:var(--rising);font-size:15px;font-weight:800;}
+.award-card.jury-prize .award-game{color:var(--jury);font-size:15px;font-weight:800;}
 .award-studio{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 .country-badge{padding:1px 7px;background:var(--surface3);border:1px solid var(--border);border-radius:2px;font-size:10px;letter-spacing:1px;}
 .award-desc{font-size:12px;color:var(--text-muted);line-height:1.55;padding-top:8px;border-top:1px solid var(--border);margin-top:auto;}
