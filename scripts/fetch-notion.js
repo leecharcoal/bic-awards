@@ -31,7 +31,6 @@ const CAT_MAP = {
   '오디오': 'audio',
   '소셜임팩트': 'social',
   '액션': 'action',
-  // 과거 부문
   '베스트 부스': 'booth',
   '베스트부스': 'booth',
   'best booth': 'booth',
@@ -81,7 +80,7 @@ async function main() {
         descEn:   getProp(page, '한줄평_EN', 'text'),
         img:      getProp(page, '이미지_URL', 'url'),
         steam:    getProp(page, '스팀링크', 'url'),
-        market:   getProp(page, '마켓링크', 'url'),
+        market:   getProp(page, '마켓링크', 'text'),
       });
     }
 
