@@ -152,6 +152,35 @@ main{max-width:1280px;margin:0 auto;padding:40px 48px 80px;}
 .empty-state{text-align:center;padding:60px 20px;color:var(--text-muted);font-family:var(--font-mono);font-size:12px;letter-spacing:1px;border:1px dashed var(--border);border-radius:var(--radius);grid-column:1/-1;}
 footer{border-top:1px solid var(--border);padding:20px 48px;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:2px;}
 footer a{color:var(--accent);text-decoration:none;}
+
+/* FLOATING WIDGET */
+.float-widget{position:fixed;bottom:32px;right:28px;display:flex;flex-direction:column;align-items:flex-end;gap:8px;z-index:500;}
+.float-year-list{display:flex;flex-direction:column;gap:6px;align-items:flex-end;
+  max-height:0;overflow:hidden;transition:max-height .35s ease,opacity .3s;opacity:0;}
+.float-widget.open .float-year-list{max-height:600px;opacity:1;}
+.float-btn-row{display:flex;gap:8px;align-items:center;}
+.float-home-btn,.float-toggle-btn{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;transition:all .25s;
+  border:1px solid var(--border);backdrop-filter:blur(8px);
+  background:rgba(16,16,28,.85);color:var(--text-muted);
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
+}
+.float-home-btn:hover{border-color:var(--accent3);color:var(--accent3);transform:scale(1.08);}
+.float-toggle-btn{background:var(--accent);border-color:var(--accent);color:#fff;}
+.float-toggle-btn:hover{background:#ff4d6d;transform:scale(1.08);}
+.float-year-btn{
+  padding:5px 14px;border-radius:20px;
+  background:rgba(16,16,28,.9);border:1px solid var(--border);
+  color:var(--text-muted);font-family:var(--font-mono);font-size:11px;
+  cursor:pointer;transition:all .2s;letter-spacing:1px;
+  backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(0,0,0,.3);
+  white-space:nowrap;
+}
+.float-year-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateX(-4px);}
+.float-year-btn.current{border-color:var(--accent);color:var(--accent);background:rgba(255,45,85,.12);}
+@media(max-width:640px){.float-widget{bottom:20px;right:16px;}}
 @media(max-width:640px){
   header,.stats-bar,.view-toggle-bar,.year-nav,.division-filter,.sponsors-bar,main,footer{padding-left:20px;padding-right:20px;}
   .logo-title{font-size:52px;}.year-number{font-size:60px;}
@@ -206,6 +235,15 @@ footer a{color:var(--accent);text-decoration:none;}
   </div>
 </div>
 <main id="mainContent"></main>
+<!-- FLOATING YEAR WIDGET -->
+<div class="float-widget" id="floatWidget">
+  <div class="float-year-list" id="floatYearList"></div>
+  <div class="float-btn-row">
+    <button class="float-home-btn" onclick="scrollToTop()" title="맨 위로">⌃</button>
+    <button class="float-toggle-btn" id="floatToggleBtn" onclick="toggleFloatWidget()" title="연도 이동">📅</button>
+  </div>
+</div>
+
 <footer>
   <a href="https://bicfest.org" target="_blank">bicfest.org</a>
   &nbsp;·&nbsp; © Busan Indie Connect Festival Organizing Committee
@@ -536,6 +574,59 @@ function renderCatDetailView(){
     byYear[yr].forEach(a=>document.getElementById(`cg-${yr}`).appendChild(buildCard(a)));
   });
 }
+// ══════════ FLOATING WIDGET ══════════
+let floatOpen = false;
+
+function toggleFloatWidget() {
+  floatOpen = !floatOpen;
+  document.getElementById('floatWidget').classList.toggle('open', floatOpen);
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  floatOpen = false;
+  document.getElementById('floatWidget').classList.remove('open');
+}
+
+function scrollToYear(yr) {
+  const el = document.getElementById(`year-anchor-${yr}`);
+  if(el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  floatOpen = false;
+  document.getElementById('floatWidget').classList.remove('open');
+}
+
+function buildFloatWidget() {
+  const widget = document.getElementById('floatWidget');
+  if(!widget) return;
+  if(currentView !== 'year') { widget.style.display = 'none'; return; }
+  widget.style.display = 'flex';
+  const years = [...new Set(awardsData.map(a=>a.year))].sort((a,b)=>b-a);
+  document.getElementById('floatYearList').innerHTML = years.map(yr =>
+    `<button class="float-year-btn" onclick="scrollToYear(${yr})">${yr}</button>`
+  ).join('');
+}
+
+// renderYearView 후에 anchor + widget 빌드
+const _baseRenderYearView = renderYearView;
+renderYearView = function() {
+  _baseRenderYearView();
+  const years = [...new Set(awardsData.map(a=>a.year))].sort((a,b)=>b-a);
+  years.forEach(yr => {
+    const grid = document.getElementById(`grid-${yr}`);
+    if(grid && grid.parentElement && !grid.parentElement.id) {
+      grid.parentElement.id = `year-anchor-${yr}`;
+    }
+  });
+  buildFloatWidget();
+};
+
+// 뷰 변경 시 위젯 표시/숨김
+const _baseSetView = setView;
+setView = function(v) {
+  _baseSetView(v);
+  buildFloatWidget();
+};
+
 loadAll();
 </script>
 </body>
