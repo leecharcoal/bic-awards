@@ -108,14 +108,16 @@ main{max-width:1280px;margin:0 auto;padding:40px 48px 80px;}
 .award-card:not(.grand-prix):not(.rising-star):not(.jury-prize) .card-strip{background:var(--accent);opacity:.5;}
 .card-body{padding:16px;display:flex;flex-direction:column;gap:5px;flex:1;}
 .card-top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:2px;}
-.award-category{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);}
+.award-category{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);}
+.cat-emblem-badge{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.15);flex-shrink:0;background:var(--surface2);}
+.cat-emblem-emoji{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--surface2);border:1px solid rgba(255,255,255,.12);flex-shrink:0;}
 .cat-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.6;flex-shrink:0;}
 .award-card.grand-prix .cat-dot{background:var(--grand);opacity:1;}
-.award-card.grand-prix .award-category{color:rgba(255,215,0,.8);}
+.award-card.grand-prix .award-category{color:rgba(255,215,0,.9);}
 .award-card.rising-star .cat-dot{background:var(--rising);opacity:1;}
-.award-card.rising-star .award-category{color:rgba(0,229,255,.8);}
+.award-card.rising-star .award-category{color:rgba(0,229,255,.9);}
 .award-card.jury-prize .cat-dot{background:var(--jury);opacity:1;}
-.award-card.jury-prize .award-category{color:rgba(192,132,252,.8);}
+.award-card.jury-prize .award-category{color:rgba(192,132,252,.9);}
 .award-game{font-weight:700;font-size:14px;line-height:1.35;color:var(--text);}
 .award-card.grand-prix .award-game{color:var(--grand);font-size:16px;font-weight:800;}
 .award-card.rising-star .award-game{color:var(--rising);font-size:15px;font-weight:800;}
@@ -442,6 +444,14 @@ function buildCard(a){
   const imgContent=a.img
     ?`<img src="${a.img}" alt="${a.gameKo}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'card-image-placeholder\\'>${(lang==='ko'?a.gameKo:a.gameEn).slice(0,2).toUpperCase()}</div>'">`
     :`<div class="card-image-placeholder">${(lang==='ko'?a.gameKo:a.gameEn).slice(0,2).toUpperCase()}</div>`;
+  // 엠블럼 배지 — 일반/루키 구분
+  const emblemSrc = (a.division==='rookie' && cat?.emblemImgRookie) ? cat.emblemImgRookie
+                  : cat?.emblemImg ? cat.emblemImg : '';
+  const catEmoji = cat?.emoji || '';
+  const emblemBadge = emblemSrc
+    ? `<img class="cat-emblem-badge" src="${emblemSrc}" alt="${catName}">`
+    : `<span class="cat-emblem-emoji">${catEmoji}</span>`;
+
   div.innerHTML=`
     <div class="card-image">${imgContent}
       ${(()=>{
@@ -454,7 +464,7 @@ function buildCard(a){
     <div class="card-strip"></div>
     <div class="card-body">
       <div class="card-top-row">
-        <div class="award-category"><span class="cat-dot"></span>${catName}</div>
+        <div class="award-category">${emblemBadge}<span>${catName}</span></div>
         ${divBadge}
       </div>
       <div class="award-game">${lang==='ko'?a.gameKo:a.gameEn}</div>
