@@ -1,6 +1,5 @@
 const { Client } = require('@notionhq/client');
 const fs = require('fs');
-
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 const dbId = process.env.NOTION_DB_ID;
 
@@ -32,6 +31,13 @@ const CAT_MAP = {
   '오디오': 'audio',
   '소셜임팩트': 'social',
   '액션': 'action',
+  // 과거 부문
+  '베스트 부스': 'booth',
+  '베스트부스': 'booth',
+  'best booth': 'booth',
+  '관객심사': 'audience',
+  '관객 심사': 'audience',
+  'audience choice': 'audience',
 };
 
 const DIV_MAP = {
@@ -65,7 +71,7 @@ async function main() {
         gameEn:   getProp(page, '게임명_EN', 'text'),
         year:     getProp(page, '연도', 'number'),
         division: DIV_MAP[divRaw] || '',
-        catId:    CAT_MAP[catRaw] || '',
+        catId:    CAT_MAP[catRaw] || CAT_MAP[catRaw?.toLowerCase()] || '',
         catKo:    catRaw,
         type:     getProp(page, '카드타입', 'select'),
         studio:   getProp(page, '스튜디오_KR', 'text'),
