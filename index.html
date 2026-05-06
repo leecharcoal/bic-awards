@@ -101,6 +101,17 @@ main{max-width:1280px;margin:0 auto;padding:40px 48px 80px;}
 .card-image{width:100%;height:160px;background:var(--surface2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0;}
 .card-image img{width:100%;height:100%;object-fit:cover;display:block;}
 .card-image-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:52px;color:rgba(255,255,255,.05);}
+/* YOUTUBE HOVER */
+.card-image{position:relative;overflow:hidden;}
+.card-youtube{position:absolute;inset:0;width:100%;height:100%;
+  opacity:0;transition:opacity .3s;pointer-events:none;z-index:4;}
+.award-card:hover .card-youtube{opacity:1;pointer-events:auto;}
+.card-youtube iframe{width:100%;height:100%;border:none;display:block;}
+.card-youtube-overlay{position:absolute;inset:0;background:rgba(0,0,0,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;cursor:pointer;z-index:5;transition:opacity .2s;}
+.card-youtube-overlay:hover{background:rgba(0,0,0,.1);}
+
 .steam-badge{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.82);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:4px 8px;font-family:var(--font-mono);font-size:10px;color:#c7d5e0;text-decoration:none;letter-spacing:1px;transition:all .2s;z-index:5;display:flex;align-items:center;gap:4px;}
 .steam-badge:hover{background:#1b2838;border-color:#66c0f4;color:#66c0f4;}
 .card-strip{height:3px;width:100%;background:var(--border);flex-shrink:0;}
@@ -549,6 +560,19 @@ function buildCard(a){
   const imgContent=a.img
     ?`<img src="${a.img}" alt="${a.gameKo}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'card-image-placeholder\\'>${(lang==='ko'?a.gameKo:a.gameEn).slice(0,2).toUpperCase()}</div>'">`
     :`<div class="card-image-placeholder">${(lang==='ko'?a.gameKo:a.gameEn).slice(0,2).toUpperCase()}</div>`;
+
+  // 유튜브 ID 추출 및 호버 영상
+  const _ytMatch = a.youtube ? a.youtube.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/) : null;
+  const _ytId = _ytMatch ? _ytMatch[1] : null;
+  const youtubeEl = _ytId ? `
+    <div class="card-youtube">
+      <iframe
+        src="https://www.youtube.com/embed/${_ytId}?autoplay=1&mute=1&loop=1&playlist=${_ytId}&controls=0&modestbranding=1&rel=0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen>
+      </iframe>
+    </div>` : '';
+
   // 엠블럼 배지 — 일반/루키 구분
   const emblemSrc = (a.division==='rookie' && cat?.emblemImgRookie) ? cat.emblemImgRookie
                   : cat?.emblemImg ? cat.emblemImg : '';
@@ -558,7 +582,7 @@ function buildCard(a){
     : `<span class="cat-emblem-emoji">${catEmoji}</span>`;
 
   div.innerHTML=`
-    <div class="card-image">${imgContent}
+    <div class="card-image">${imgContent}${youtubeEl}
       ${(()=>{
         const firstUrl = a.steam || (a.market ? a.market.split(',')[0].trim() : '');
         if(!firstUrl) return '';
