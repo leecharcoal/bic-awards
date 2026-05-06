@@ -1644,8 +1644,8 @@
       "gameEn": "Labyrinth City",
       "year": 2021,
       "division": "general",
-      "catId": "",
-      "catKo": "심사위원상",
+      "catId": "jury-general",
+      "catKo": "심사위원상(일반)",
       "type": "jury-prize",
       "studio": "Darjeeling",
       "studioEn": "Darjeeling",
@@ -1950,8 +1950,8 @@
       "gameEn": "Smelter",
       "year": 2020,
       "division": "general",
-      "catId": "",
-      "catKo": "심사위원상",
+      "catId": "jury-general",
+      "catKo": "심사위원상(일반)",
       "type": "jury-prize",
       "studio": "X Plus Company Limited",
       "studioEn": "X Plus Company Limited",
@@ -2184,8 +2184,8 @@
       "gameEn": "Frincess&Cnight",
       "year": 2019,
       "division": "general",
-      "catId": "",
-      "catKo": "심사위원상",
+      "catId": "jury-general",
+      "catKo": "심사위원상(일반)",
       "type": "jury-prize",
       "studio": "싱글코어게임즈",
       "studioEn": "Singlecore Games",
@@ -2755,5 +2755,5 @@
       "market": ""
     }
   ],
-  "updatedAt": "2026-05-06T07:49:58.287Z"
+  "updatedAt": "2026-05-06T09:25:19.649Z"
 }
