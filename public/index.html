@@ -473,6 +473,8 @@ function renderYearView(){
     else if(filterDiv==='rookie') awards=awards.filter(a=>a.division==='rookie');
     // 체크박스 필터 (division + award + search 모두 적용)
     awards=awards.filter(a=>matchFilters(a)&&matchSearchOnly(a));
+    // 연도 내 랜덤 정렬 (페이지 로드마다 섞임)
+    awards=awards.sort(()=>Math.random()-.5);
     if(!awards.length) return; // 결과 없으면 연도 섹션 숨김
     const sec=document.createElement('div');
     sec.className='year-section';
