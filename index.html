@@ -468,10 +468,12 @@ function renderYearView(){
   if(!filteredYears.length){main.innerHTML=`<div class="empty-state">${lang==='ko'?'데이터가 없습니다':'No data available'}</div>`;return;}
   filteredYears.forEach(yr=>{
     let awards=awardsData.filter(a=>a.year===yr);
+    // 상단 탭 division 필터
     if(filterDiv==='general') awards=awards.filter(a=>a.division==='general');
     else if(filterDiv==='rookie') awards=awards.filter(a=>a.division==='rookie');
-    if(searchQuery) awards=awards.filter(a=>matchSearch(a));
-    if(searchQuery && !awards.length) return; // 검색 결과 없으면 연도 섹션 숨김
+    // 체크박스 필터 (division + award + search 모두 적용)
+    awards=awards.filter(a=>matchFilters(a)&&matchSearchOnly(a));
+    if(!awards.length) return; // 결과 없으면 연도 섹션 숨김
     const sec=document.createElement('div');
     sec.className='year-section';
     sec.innerHTML=`
@@ -611,7 +613,7 @@ function renderCatDetailView(){
   main.innerHTML='';
   const cat=categories.find(c=>c.id===selectedCatId);
   if(!cat){setView('category');return;}
-  const allAwards=awardsData.filter(a=>a.catId===selectedCatId&&matchSearch(a)).sort((a,b)=>b.year-a.year);
+  const allAwards=awardsData.filter(a=>a.catId===selectedCatId&&matchSearchOnly(a)).sort((a,b)=>b.year-a.year);
   const emblemInner=cat.emblemImg?`<img src="${cat.emblemImg}" alt="${cat.nameKo}">`:`${cat.emoji}`;
   const hdr=document.createElement('div');
   hdr.className='cat-detail-header';
@@ -658,14 +660,13 @@ function clearSearch() {
 function updateSearchInfo() {
   const info = document.getElementById('searchResultInfo');
   if(!searchQuery) { info.textContent = ''; return; }
-  const matched = awardsData.filter(a => matchSearch(a)).length;
+  const matched = awardsData.filter(a => matchFilters(a) && matchSearchOnly(a)).length;
   info.textContent = lang==='ko'
     ? `"${searchQuery}" 검색 결과 ${matched}개`
     : `${matched} result(s) for "${searchQuery}"`;
 }
 
-function matchSearch(a) {
-  if(!matchFilters(a)) return false;
+function matchSearchOnly(a) {
   if(!searchQuery) return true;
   const q = searchQuery;
   const fields = [
@@ -675,6 +676,10 @@ function matchSearch(a) {
     categories.find(c=>c.id===a.catId)?.nameEn || '',
   ];
   return fields.some(f => f && f.toLowerCase().includes(q));
+}
+
+function matchSearch(a) {
+  return matchFilters(a) && matchSearchOnly(a);
 }
 
 // ══════════ CHECKBOX FILTERS ══════════
