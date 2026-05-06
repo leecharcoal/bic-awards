@@ -462,7 +462,9 @@ function renderYearView(){
   const main=document.getElementById('mainContent');
   main.innerHTML='';
   const years=[...new Set(awardsData.map(a=>a.year))].sort((a,b)=>b-a);
-  const filteredYears=filterYear==='all'?years:years.filter(y=>y===filterYear);
+  let filteredYears=filterYear==='all'?years:years.filter(y=>y===filterYear);
+  // 체크박스 연도 필터 적용
+  if(activeFilters.years.size > 0) filteredYears=filteredYears.filter(y=>activeFilters.years.has(y));
   if(!filteredYears.length){main.innerHTML=`<div class="empty-state">${lang==='ko'?'데이터가 없습니다':'No data available'}</div>`;return;}
   filteredYears.forEach(yr=>{
     let awards=awardsData.filter(a=>a.year===yr);
@@ -756,13 +758,13 @@ function buildFilterPanel() {
 }
 
 function toggleFilter(group, val, checked) {
+  if(group === 'years') val = parseInt(val) || val;
   if(checked) activeFilters[group].add(val);
   else activeFilters[group].delete(val);
   updateFilterBadge();
+  buildFilterPanel();
   renderMain();
   updateSearchInfo();
-  // 칩 active 상태 업데이트
-  buildFilterPanel();
 }
 
 function resetFilters() {
@@ -781,7 +783,7 @@ function updateFilterBadge() {
 }
 
 function matchFilters(a) {
-  if(activeFilters.years.size > 0 && !activeFilters.years.has(a.year)) return false;
+  if(activeFilters.years.size > 0 && !activeFilters.years.has(Number(a.year))) return false;
   if(activeFilters.divisions.size > 0 && !activeFilters.divisions.has(a.division)) return false;
   if(activeFilters.awards.size > 0 && !activeFilters.awards.has(a.catId)) return false;
   return true;
