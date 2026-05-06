@@ -32,7 +32,8 @@
         "labelKo": "총 수상",
         "labelEn": "Total Awards Winners"
       }
-    ]
+    ],
+    "bicColor": "#faf005"
   },
   "categories": {
     "grand-prix": {
