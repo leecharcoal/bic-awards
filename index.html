@@ -628,10 +628,12 @@ function renderCatDetailView(){
   Object.keys(byYear).sort((a,b)=>b-a).forEach(yr=>{
     const sec=document.createElement('div');
     sec.className='year-section';
+    sec.id=`cat-year-anchor-${yr}`;
     sec.innerHTML=`<div class="year-header" style="margin-bottom:16px"><div class="year-number" style="font-size:56px">${yr}</div></div><div class="awards-grid" id="cg-${yr}"></div>`;
     main.appendChild(sec);
     byYear[yr].forEach(a=>document.getElementById(`cg-${yr}`).appendChild(buildCard(a)));
   });
+  buildFloatWidget();
 }
 // ══════════ SEARCH ══════════
 let searchQuery = '';
@@ -809,12 +811,34 @@ function scrollToYear(yr) {
 function buildFloatWidget() {
   const widget = document.getElementById('floatWidget');
   if(!widget) return;
-  if(currentView !== 'year') { widget.style.display = 'none'; return; }
-  widget.style.display = 'flex';
-  const years = [...new Set(awardsData.map(a=>a.year))].sort((a,b)=>b-a);
-  document.getElementById('floatYearList').innerHTML = years.map(yr =>
-    `<button class="float-year-btn" onclick="scrollToYear(${yr})">${yr}</button>`
-  ).join('');
+
+  if(currentView === 'year') {
+    widget.style.display = 'flex';
+    const years = [...new Set(awardsData.map(a=>a.year))].sort((a,b)=>b-a);
+    document.getElementById('floatYearList').innerHTML = years.map(yr =>
+      `<button class="float-year-btn" onclick="scrollToYear(${yr})">${yr}</button>`
+    ).join('');
+  } else if(currentView === 'cat-detail') {
+    widget.style.display = 'flex';
+    // 해당 부문 수상작의 연도만 추출
+    const years = [...new Set(
+      awardsData.filter(a=>a.catId===selectedCatId).map(a=>a.year)
+    )].sort((a,b)=>b-a);
+    document.getElementById('floatYearList').innerHTML = years.length
+      ? years.map(yr =>
+          `<button class="float-year-btn" onclick="scrollToCatYear(${yr})">${yr}</button>`
+        ).join('')
+      : '';
+  } else {
+    widget.style.display = 'none';
+  }
+}
+
+function scrollToCatYear(yr) {
+  const el = document.getElementById(`cat-year-anchor-${yr}`);
+  if(el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  floatOpen = false;
+  document.getElementById('floatWidget').classList.remove('open');
 }
 
 // renderYearView 후에 anchor + widget 빌드
