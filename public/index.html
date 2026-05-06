@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<link rel="icon" href="favicon.png" type="image/png">  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BIC Awards Archive</title>
@@ -165,6 +166,24 @@ footer a{color:var(--accent);text-decoration:none;}
 .search-clear.visible{display:flex;}
 .search-result-info{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-top:8px;height:14px;transition:opacity .2s;}
 
+/* FILTER PANEL */
+.filter-panel{padding:0 48px;border-bottom:1px solid var(--border);background:var(--surface);overflow:hidden;max-height:0;transition:max-height .35s ease,padding .35s;position:relative;z-index:2;}
+.filter-panel.open{max-height:600px;padding:16px 48px;}
+.filter-panel-inner{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+.filter-row{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+.filter-row-label{font-family:var(--font-mono);font-size:10px;color:var(--accent2);letter-spacing:2px;text-transform:uppercase;width:60px;padding-top:3px;flex-shrink:0;}
+.filter-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1;}
+.filter-chip{display:flex;align-items:center;gap:5px;padding:4px 10px;border:1px solid var(--border);border-radius:20px;background:none;color:var(--text-muted);font-family:var(--font-mono);font-size:10px;cursor:pointer;transition:all .2s;letter-spacing:1px;user-select:none;}
+.filter-chip:hover{border-color:var(--accent);color:var(--accent);}
+.filter-chip.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.filter-chip input[type="checkbox"]{display:none;}
+.filter-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:4px;border-top:1px solid var(--border);}
+.filter-reset-btn{padding:5px 14px;background:none;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-family:var(--font-mono);font-size:10px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
+.filter-reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+.filter-toggle-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:none;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-family:var(--font-mono);font-size:10px;cursor:pointer;transition:all .2s;letter-spacing:1px;margin-left:8px;}
+.filter-toggle-btn:hover,.filter-toggle-btn.active{border-color:var(--accent2);color:var(--accent2);}
+.filter-count-badge{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--accent);color:#fff;font-size:9px;font-weight:700;}
+
 /* FLOATING WIDGET */
 .float-widget{position:fixed;bottom:32px;right:28px;display:flex;flex-direction:column;align-items:flex-end;gap:8px;z-index:500;}
 .float-year-list{display:flex;flex-direction:column;gap:6px;align-items:flex-end;
@@ -245,8 +264,19 @@ footer a{color:var(--accent);text-decoration:none;}
       placeholder="게임명, 개발사, 국가 검색... / Search games, studios, countries..."
       oninput="handleSearch(this.value)">
     <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
-    <div class="search-result-info" id="searchResultInfo"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+      <div class="search-result-info" id="searchResultInfo"></div>
+      <button class="filter-toggle-btn" id="filterToggleBtn" onclick="toggleFilterPanel()">
+        ⚙ <span id="filterToggleLabel">필터</span>
+        <span class="filter-count-badge" id="filterCountBadge" style="display:none"></span>
+      </button>
+    </div>
   </div>
+</div>
+
+<!-- FILTER PANEL -->
+<div class="filter-panel" id="filterPanel">
+  <div class="filter-panel-inner" id="filterPanelInner"></div>
 </div>
 
 <div class="year-nav" id="yearNavBar"><div class="year-nav-inner" id="yearNav"></div></div>
@@ -628,6 +658,7 @@ function updateSearchInfo() {
 }
 
 function matchSearch(a) {
+  if(!matchFilters(a)) return false;
   if(!searchQuery) return true;
   const q = searchQuery;
   const fields = [
@@ -637,6 +668,118 @@ function matchSearch(a) {
     categories.find(c=>c.id===a.catId)?.nameEn || '',
   ];
   return fields.some(f => f && f.toLowerCase().includes(q));
+}
+
+// ══════════ CHECKBOX FILTERS ══════════
+let filterOpen = false;
+let activeFilters = { years: new Set(), divisions: new Set(), awards: new Set() };
+
+const ALL_YEARS_LIST = [2025,2024,2023,2022,2021,2020,2019,2018,2017,2016,2015];
+const DIVISION_LIST = [
+  {id:'general', ko:'일반부문', en:'General'},
+  {id:'rookie',  ko:'루키부문', en:'Rookie'},
+];
+const AWARD_LIST = [
+  {id:'grand-prix',   ko:'그랑프리',      en:'Grand Prix'},
+  {id:'rising-star',  ko:'라이징스타',    en:'Rising Star'},
+  {id:'jury-general', ko:'심사위원상(일반)',en:'Jury Prize (General)'},
+  {id:'jury-rookie',  ko:'심사위원상(루키)',en:'Jury Prize (Rookie)'},
+  {id:'art',          ko:'아트',          en:'Art'},
+  {id:'design',       ko:'게임디자인',    en:'Game Design'},
+  {id:'experimental', ko:'실험성',        en:'Experimental'},
+  {id:'narrative',    ko:'서사',          en:'Narrative'},
+  {id:'casual',       ko:'캐주얼',        en:'Casual'},
+  {id:'esports',      ko:'이스포츠',      en:'e-Sports'},
+  {id:'audio',        ko:'오디오',        en:'Audio'},
+  {id:'social',       ko:'소셜임팩트',    en:'Social Impact'},
+  {id:'action',       ko:'액션',          en:'Action'},
+  {id:'booth',        ko:'베스트 부스',   en:'Best Booth'},
+  {id:'audience',     ko:'관객심사',      en:'Audience Choice'},
+];
+
+function toggleFilterPanel() {
+  filterOpen = !filterOpen;
+  document.getElementById('filterPanel').classList.toggle('open', filterOpen);
+  document.getElementById('filterToggleBtn').classList.toggle('active', filterOpen);
+  document.getElementById('filterToggleLabel').textContent = filterOpen
+    ? (lang==='ko'?'필터 닫기':'Close')
+    : (lang==='ko'?'필터':'Filter');
+  if(filterOpen) buildFilterPanel();
+}
+
+function buildFilterPanel() {
+  const inner = document.getElementById('filterPanelInner');
+  const yr = lang==='ko' ? '연도' : 'YEAR';
+  const dv = lang==='ko' ? '부문' : 'DIV';
+  const aw = lang==='ko' ? '어워드' : 'AWARD';
+
+  inner.innerHTML = `
+    <div class="filter-row">
+      <span class="filter-row-label">${yr}</span>
+      <div class="filter-chips">
+        ${ALL_YEARS_LIST.map(y => `
+          <label class="filter-chip ${activeFilters.years.has(y)?'active':''}">
+            <input type="checkbox" ${activeFilters.years.has(y)?'checked':''} onchange="toggleFilter('years',${y},this.checked)">
+            ${y}
+          </label>`).join('')}
+      </div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-row-label">${dv}</span>
+      <div class="filter-chips">
+        ${DIVISION_LIST.map(d => `
+          <label class="filter-chip ${activeFilters.divisions.has(d.id)?'active':''}">
+            <input type="checkbox" ${activeFilters.divisions.has(d.id)?'checked':''} onchange="toggleFilter('divisions','${d.id}',this.checked)">
+            ${lang==='ko'?d.ko:d.en}
+          </label>`).join('')}
+      </div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-row-label">${aw}</span>
+      <div class="filter-chips">
+        ${AWARD_LIST.map(a => `
+          <label class="filter-chip ${activeFilters.awards.has(a.id)?'active':''}">
+            <input type="checkbox" ${activeFilters.awards.has(a.id)?'checked':''} onchange="toggleFilter('awards','${a.id}',this.checked)">
+            ${lang==='ko'?a.ko:a.en}
+          </label>`).join('')}
+      </div>
+    </div>
+    <div class="filter-actions">
+      <button class="filter-reset-btn" onclick="resetFilters()">✕ ${lang==='ko'?'필터 초기화':'Reset Filters'}</button>
+    </div>
+  `;
+}
+
+function toggleFilter(group, val, checked) {
+  if(checked) activeFilters[group].add(val);
+  else activeFilters[group].delete(val);
+  updateFilterBadge();
+  renderMain();
+  updateSearchInfo();
+  // 칩 active 상태 업데이트
+  buildFilterPanel();
+}
+
+function resetFilters() {
+  activeFilters = { years: new Set(), divisions: new Set(), awards: new Set() };
+  updateFilterBadge();
+  buildFilterPanel();
+  renderMain();
+  updateSearchInfo();
+}
+
+function updateFilterBadge() {
+  const total = activeFilters.years.size + activeFilters.divisions.size + activeFilters.awards.size;
+  const badge = document.getElementById('filterCountBadge');
+  if(total > 0) { badge.style.display='flex'; badge.textContent=total; }
+  else badge.style.display='none';
+}
+
+function matchFilters(a) {
+  if(activeFilters.years.size > 0 && !activeFilters.years.has(a.year)) return false;
+  if(activeFilters.divisions.size > 0 && !activeFilters.divisions.has(a.division)) return false;
+  if(activeFilters.awards.size > 0 && !activeFilters.awards.has(a.catId)) return false;
+  return true;
 }
 
 // ══════════ FLOATING WIDGET ══════════
