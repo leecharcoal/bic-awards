@@ -2,10 +2,10 @@
   "site": {
     "eyebrow": "Busan Indie Connect Festival",
     "subtitle": "역대 수상작 아카이브 / All-Time Award Archive",
-    "primaryColor": "#faf005",
+    "primaryColor": "#080810",
     "accentColor": "#f54baa",
     "subColor": "#9646c8",
-    "bgColor": "#080810",
+    "bgColor": "#faf005",
     "displayFont": "'Bebas Neue','Black Han Sans',sans-serif",
     "bodyFont": "'Noto Sans KR',sans-serif",
     "bgImage": "",
