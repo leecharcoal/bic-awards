@@ -151,8 +151,7 @@ main{max-width:1280px;margin:0 auto;padding:40px 48px 80px;}
 .award-card.rising-star .award-game{color:var(--rising);font-size:16px;font-weight:800;}
 .award-card.jury-prize .award-game{color:var(--jury);font-size:16px;font-weight:800;}
 .award-studio{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.country-badge{padding:2px 8px;background:var(--surface3);border:1px solid var(--border);border-radius:4px;font-size:13px;letter-spacing:1px;display:inline-flex;align-items:center;gap:4px;}
-.country-code{font-size:10px;opacity:.7;}
+.country-badge{padding:1px 7px;background:var(--surface3);border:1px solid var(--border);border-radius:2px;font-size:10px;letter-spacing:1px;}
 .award-desc{font-size:13px;color:var(--text-muted);line-height:1.6;padding-top:8px;border-top:1px solid var(--border);margin-top:auto;}
 .steam-link-text,.market-link-text{display:inline-flex;align-items:center;gap:4px;margin-top:6px;margin-right:8px;font-family:var(--font-mono);font-size:10px;color:#66c0f4;text-decoration:none;letter-spacing:1px;transition:opacity .2s;}
 .steam-link-text:hover,.market-link-text:hover{opacity:.7;}
@@ -410,9 +409,24 @@ function applyConfig(){
   if(s.accentColor) r.setProperty('--accent2',s.accentColor);
   if(s.subColor)    r.setProperty('--accent3',s.subColor);
   if(s.bgColor)     {r.setProperty('--bg',s.bgColor);document.body.style.background=s.bgColor;}
-  if(s.displayFont) r.setProperty('--font-display',s.displayFont);
-  if(s.bodyFont)    {r.setProperty('--font-body',s.bodyFont);document.body.style.fontFamily=s.bodyFont;}
-  if(s.fontSize)    {document.body.style.fontSize=s.fontSize+'px';r.setProperty('--font-size-base', s.fontSize+'px');}
+  if(s.displayFont) {
+    r.setProperty('--font-display', s.displayFont);
+    // display font가 적용된 모든 요소에 직접 적용
+    document.querySelectorAll('.logo-title,.year-number,.stat-num,.cat-name,.cat-detail-title,.cat-section-header').forEach(el=>{
+      el.style.fontFamily = s.displayFont;
+    });
+    // BIC 타이틀 span도 별도 적용
+    const bicEl = document.getElementById('bicTitle');
+    if(bicEl) bicEl.style.fontFamily = s.displayFont;
+  }
+  if(s.bodyFont) {
+    r.setProperty('--font-body', s.bodyFont);
+    document.body.style.fontFamily = s.bodyFont;
+  }
+  if(s.fontSize) {
+    document.body.style.fontSize = s.fontSize+'px';
+    r.setProperty('--font-size-base', s.fontSize+'px');
+  }
   if(s.eyebrow)  document.getElementById('hdrEyebrow').textContent=s.eyebrow;
   if(s.subtitle) document.getElementById('hdrSubtitle').textContent=s.subtitle;
   if(s.bicColor) {
@@ -683,7 +697,7 @@ function buildCard(a){
         ${divBadge}
       </div>
       <div class="award-game">${lang==='ko'?a.gameKo:a.gameEn}</div>
-      <div class="award-studio">${a.studio||a.studioEn||''}${a.country?`<span class="country-badge">${countryFlag(a.country)}<span class="country-code">${a.country}</span></span>`:''}</div>
+      <div class="award-studio">${a.studio||a.studioEn||''}${a.country?`<span class="country-badge">${a.country}</span>`:''}</div>
       ${(lang==='ko'?a.descKo:a.descEn)?`<div class="award-desc">${lang==='ko'?a.descKo:a.descEn}</div>`:''}
       ${buildMarketLinks(a.steam, a.market)}
     </div>`;
