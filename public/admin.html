@@ -290,6 +290,10 @@ input[type="color"]{width:36px;height:36px;border:1px solid var(--border);border
               <option value="'Bebas Neue','Black Han Sans',sans-serif">Bebas Neue (현재)</option>
               <option value="'Black Han Sans',sans-serif">Black Han Sans</option>
               <option value="'Russo One',sans-serif">Russo One</option>
+              <option value="'Oswald',sans-serif">Oswald</option>
+              <option value="'Anton',sans-serif">Anton</option>
+              <option value="'Barlow Condensed',sans-serif">Barlow Condensed</option>
+              <option value="'Playfair Display',serif">Playfair Display</option>
               <option value="Georgia,serif">Georgia Serif</option>
               <option value="'Courier New',monospace">Courier New</option>
             </select>
@@ -299,9 +303,19 @@ input[type="color"]{width:36px;height:36px;border:1px solid var(--border);border
             <select class="form-select" id="cfg_bodyFont">
               <option value="'Noto Sans KR',sans-serif">Noto Sans KR (현재)</option>
               <option value="'Malgun Gothic',sans-serif">Malgun Gothic</option>
+              <option value="'Nanum Gothic',sans-serif">Nanum Gothic</option>
+              <option value="'Nanum Myeongjo',serif">Nanum Myeongjo</option>
+              <option value="'IBM Plex Sans KR',sans-serif">IBM Plex Sans KR</option>
               <option value="Georgia,serif">Georgia</option>
               <option value="'Apple SD Gothic Neo',sans-serif">Apple SD Gothic Neo</option>
             </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:8px;">
+          <label class="form-label">기본 폰트 크기 (px) — 본문 기준</label>
+          <input class="form-input" id="cfg_fontSize" type="number" min="12" max="22" placeholder="15" style="width:120px">
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:6px;letter-spacing:1px;">
+            ※ 기준값 15px · 작게 12px / 보통 15px / 크게 18px
           </div>
         </div>
       </div>
@@ -426,6 +440,7 @@ async function loadConfig() {
 function populateForm() {
   const s = config.site || {};
   document.getElementById('cfg_eyebrow').value        = s.eyebrow || '';
+  document.getElementById('cfg_fontSize').value       = s.fontSize || 15;
   const bicCol = s.bicColor || '#ffffff';
   document.getElementById('tc_bicColor').value = bicCol;
   document.getElementById('ch_bicColor').value = bicCol;
@@ -669,6 +684,8 @@ function collectForm() {
   config.site.bgOverlay   = parseFloat(document.getElementById('cfg_bgOverlay').value) || 0.6;
   config.site.displayFont = document.getElementById('cfg_displayFont').value;
   config.site.bodyFont    = document.getElementById('cfg_bodyFont').value;
+  const fs = document.getElementById('cfg_fontSize').value;
+  if(fs) config.site.fontSize = parseInt(fs);
   COLOR_DEFS.forEach(d => {
     config.site[d.key] = document.getElementById(`cp_${d.key}`).value;
   });
