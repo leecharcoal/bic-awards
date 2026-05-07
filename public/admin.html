@@ -437,7 +437,10 @@ function showTab(name) {
 // ══════════════ LOAD CONFIG ══════════════
 async function loadConfig() {
   try {
-    const res = await fetch('/bic-awards/config.json?t=' + Date.now());
+    const res = await fetch('/bic-awards/config.json?t=' + Date.now(), {
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+    });
     config = await res.json();
   } catch(e) {
     config = {
