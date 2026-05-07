@@ -685,7 +685,7 @@ function collectForm() {
   config.site.displayFont = document.getElementById('cfg_displayFont').value;
   config.site.bodyFont    = document.getElementById('cfg_bodyFont').value;
   const fs = document.getElementById('cfg_fontSize').value;
-  if(fs) config.site.fontSize = parseInt(fs);
+  config.site.fontSize = fs ? parseInt(fs) : 15;
   COLOR_DEFS.forEach(d => {
     config.site[d.key] = document.getElementById(`cp_${d.key}`).value;
   });

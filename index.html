@@ -362,7 +362,7 @@ function applyConfig(){
   if(s.bgColor)     {r.setProperty('--bg',s.bgColor);document.body.style.background=s.bgColor;}
   if(s.displayFont) r.setProperty('--font-display',s.displayFont);
   if(s.bodyFont)    {r.setProperty('--font-body',s.bodyFont);document.body.style.fontFamily=s.bodyFont;}
-  if(s.fontSize)    {document.body.style.fontSize=s.fontSize+'px';}
+  if(s.fontSize)    {document.body.style.fontSize=s.fontSize+'px';r.setProperty('--font-size-base', s.fontSize+'px');}
   if(s.eyebrow)  document.getElementById('hdrEyebrow').textContent=s.eyebrow;
   if(s.subtitle) document.getElementById('hdrSubtitle').textContent=s.subtitle;
   if(s.bicColor) {
