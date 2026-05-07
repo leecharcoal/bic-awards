@@ -136,7 +136,8 @@ main{max-width:1280px;margin:0 auto;padding:40px 48px 80px;}
 .award-card.rising-star .award-game{color:var(--rising);font-size:16px;font-weight:800;}
 .award-card.jury-prize .award-game{color:var(--jury);font-size:16px;font-weight:800;}
 .award-studio{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.country-badge{padding:1px 7px;background:var(--surface3);border:1px solid var(--border);border-radius:2px;font-size:10px;letter-spacing:1px;}
+.country-badge{padding:2px 8px;background:var(--surface3);border:1px solid var(--border);border-radius:4px;font-size:13px;letter-spacing:1px;display:inline-flex;align-items:center;gap:4px;}
+.country-code{font-size:10px;opacity:.7;}
 .award-desc{font-size:13px;color:var(--text-muted);line-height:1.6;padding-top:8px;border-top:1px solid var(--border);margin-top:auto;}
 .steam-link-text,.market-link-text{display:inline-flex;align-items:center;gap:4px;margin-top:6px;margin-right:8px;font-family:var(--font-mono);font-size:10px;color:#66c0f4;text-decoration:none;letter-spacing:1px;transition:opacity .2s;}
 .steam-link-text:hover,.market-link-text:hover{opacity:.7;}
@@ -511,6 +512,34 @@ function renderYearView(){
     else awards.forEach(a=>grid.appendChild(buildCard(a)));
   });
 }
+// ══════════ 국가 유틸 ══════════
+function countryFlag(code) {
+  if(!code) return '';
+  // 2자리 ISO 코드 → 국기 이모지
+  const upper = code.toUpperCase().trim();
+  if(upper.length !== 2) return '';
+  return String.fromCodePoint(
+    upper.charCodeAt(0) + 127397,
+    upper.charCodeAt(1) + 127397
+  );
+}
+
+// 한글 국가명 검색 매핑
+const COUNTRY_KO_MAP = {
+  'KR': '한국 대한민국', 'US': '미국', 'JP': '일본', 'CN': '중국',
+  'GB': '영국', 'FR': '프랑스', 'DE': '독일', 'AU': '호주',
+  'CA': '캐나다', 'TW': '대만', 'HK': '홍콩', 'SG': '싱가포르',
+  'TH': '태국', 'VN': '베트남', 'MY': '말레이시아', 'ID': '인도네시아',
+  'PH': '필리핀', 'IN': '인도', 'RU': '러시아', 'PL': '폴란드',
+  'ES': '스페인', 'IT': '이탈리아', 'NL': '네덜란드', 'SE': '스웨덴',
+  'NO': '노르웨이', 'DK': '덴마크', 'FI': '핀란드', 'CH': '스위스',
+  'AT': '오스트리아', 'BE': '벨기에', 'PT': '포르투갈', 'CZ': '체코',
+  'RO': '루마니아', 'HU': '헝가리', 'BR': '브라질', 'AR': '아르헨티나',
+  'MX': '멕시코', 'CL': '칠레', 'ZA': '남아프리카', 'NZ': '뉴질랜드',
+  'IL': '이스라엘', 'TR': '터키', 'UA': '우크라이나', 'GR': '그리스',
+  'HR': '크로아티아', 'SK': '슬로바키아', 'RS': '세르비아',
+};
+
 const steamSvg=`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.527h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.606 0 11.979 0z"/></svg>`;
 
 function detectMarket(url) {
@@ -604,7 +633,7 @@ function buildCard(a){
         ${divBadge}
       </div>
       <div class="award-game">${lang==='ko'?a.gameKo:a.gameEn}</div>
-      <div class="award-studio">${a.studio||a.studioEn||''}${a.country?`<span class="country-badge">${a.country}</span>`:''}</div>
+      <div class="award-studio">${a.studio||a.studioEn||''}${a.country?`<span class="country-badge">${countryFlag(a.country)}<span class="country-code">${a.country}</span></span>`:''}</div>
       ${(lang==='ko'?a.descKo:a.descEn)?`<div class="award-desc">${lang==='ko'?a.descKo:a.descEn}</div>`:''}
       ${buildMarketLinks(a.steam, a.market)}
     </div>`;
@@ -704,9 +733,10 @@ function updateSearchInfo() {
 function matchSearchOnly(a) {
   if(!searchQuery) return true;
   const q = searchQuery;
+  const countryKo = COUNTRY_KO_MAP[a.country?.toUpperCase()] || '';
   const fields = [
     a.gameKo, a.gameEn, a.studio, a.studioEn,
-    a.country, a.catKo,
+    a.country, a.catKo, countryKo,
     categories.find(c=>c.id===a.catId)?.nameKo || '',
     categories.find(c=>c.id===a.catId)?.nameEn || '',
   ];
