@@ -6,7 +6,7 @@
     "accentColor": "#f54baa",
     "subColor": "#9646c8",
     "bgColor": "#080810",
-    "displayFont": "'Bebas Neue','Black Han Sans',sans-serif",
+    "displayFont": "'Oswald',sans-serif",
     "bodyFont": "'Apple SD Gothic Neo',sans-serif",
     "bgImage": "",
     "bgOverlay": 0.4,
@@ -33,7 +33,8 @@
         "labelEn": "Total Awards Winners"
       }
     ],
-    "bicColor": "#faf005"
+    "bicColor": "#faf005",
+    "fontSize": 22
   },
   "categories": {
     "grand-prix": {
