@@ -9,7 +9,19 @@
 <meta property="og:title" content="BIC Awards Archive">
 <meta property="og:description" content="부산 인디 커넥트 페스티벌 역대 수상작 아카이브">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Oswald:wght@400;700&family=Anton&family=Barlow+Condensed:wght@400;700&family=Playfair+Display:wght@400;700&family=Nanum+Gothic:wght@400;700&family=Nanum+Myeongjo&family=IBM+Plex+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Oswald:wght@400;700&family=Anton&family=Barlow+Condensed:wght@400;700&family=Playfair+Display:wght@400;700&family=Nanum+Gothic:wght@400;700&family=Nanum+Myeongjo&family=IBM+Plex+Sans+KR:wght@300;400;700&family=Fjalla+One&display=swap" rel="stylesheet">
+<style>
+/* SUIT 폰트 */
+@font-face { font-family:'SUIT'; src:url('SUIT-Thin.otf') format('opentype'); font-weight:100; }
+@font-face { font-family:'SUIT'; src:url('SUIT-ExtraLight.otf') format('opentype'); font-weight:200; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Light.otf') format('opentype'); font-weight:300; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Regular.otf') format('opentype'); font-weight:400; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Medium.otf') format('opentype'); font-weight:500; }
+@font-face { font-family:'SUIT'; src:url('SUIT-SemiBold.otf') format('opentype'); font-weight:600; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Bold.otf') format('opentype'); font-weight:700; }
+@font-face { font-family:'SUIT'; src:url('SUIT-ExtraBold.otf') format('opentype'); font-weight:800; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Heavy.otf') format('opentype'); font-weight:900; }
+</style>
 <style>
 :root{
   --bg:#080810;--surface:#10101c;--surface2:#18182a;--surface3:#20203a;
@@ -28,14 +40,17 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .bg-image{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;background-repeat:no-repeat;pointer-events:none;}
 .bg-overlay{position:fixed;inset:0;z-index:1;pointer-events:none;}
 header,.stats-bar,.view-toggle-bar,.year-nav,.division-filter,.sponsors-bar,main,footer{position:relative;z-index:2;}
-.loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:8000;transition:opacity .5s;}
+.loading-screen{position:fixed;inset:0;background:rgb(250,240,5);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:8000;transition:opacity .8s ease;}
 .loading-screen.hidden{opacity:0;pointer-events:none;}
-.loading-logo{font-family:var(--font-display);font-size:80px;color:var(--accent);letter-spacing:4px;line-height:1;margin-bottom:24px;}
-.loading-logo span{color:var(--text);}
-.loading-bar-wrap{width:200px;height:2px;background:var(--border);border-radius:2px;overflow:hidden;}
-.loading-bar{height:100%;background:var(--accent);border-radius:2px;animation:loadBar 1.5s ease forwards;}
-@keyframes loadBar{from{width:0}to{width:100%}}
-.loading-text{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);margin-top:14px;letter-spacing:3px;}
+.loading-year-flash{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Fjalla One','Bebas Neue',sans-serif;font-size:220px;color:rgba(0,0,0,0.07);letter-spacing:-5px;pointer-events:none;user-select:none;font-weight:900;}
+.loading-center{display:flex;flex-direction:column;align-items:center;gap:28px;position:relative;z-index:2;}
+.loading-ci{opacity:0;transform:scale(.85);filter:blur(8px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1),filter .7s ease;}
+.loading-ci.show{opacity:1;transform:scale(1);filter:blur(0);}
+.loading-ci img{width:260px;height:auto;object-fit:contain;}
+.loading-tagline{font-family:'Fjalla One','Bebas Neue',sans-serif;font-size:11px;color:rgba(0,0,0,0);letter-spacing:8px;text-transform:uppercase;transition:color .6s .4s;}
+.loading-tagline.show{color:rgba(0,0,0,0.45);}
+.loading-bar-wrap{width:200px;height:2px;background:rgba(0,0,0,.15);border-radius:1px;overflow:hidden;}
+.loading-bar-inner{height:100%;width:0;background:#000;transition:width 2s cubic-bezier(.4,0,.2,1);}
 header{padding:56px 48px 36px;border-bottom:1px solid var(--border);overflow:hidden;}
 header::before{content:'AWARDS';position:absolute;right:-10px;top:-20px;font-family:var(--font-display);font-size:240px;line-height:1;color:rgba(255,45,85,0.04);pointer-events:none;user-select:none;letter-spacing:-5px;}
 .header-inner{max-width:1280px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;}
@@ -236,9 +251,14 @@ footer a{color:var(--accent);text-decoration:none;}
 <div class="bg-image" id="bgImage"></div>
 <div class="bg-overlay" id="bgOverlay"></div>
 <div class="loading-screen" id="loadingScreen">
-  <div class="loading-logo">BIC <span>AWARDS</span></div>
-  <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
-  <div class="loading-text">LOADING ARCHIVE...</div>
+  <div class="loading-year-flash" id="loadingYearFlash">2015</div>
+  <div class="loading-center">
+    <div class="loading-ci" id="loadingCI">
+      <img src="BIC_CI.png" alt="BIC">
+    </div>
+    <div class="loading-tagline" id="loadingTagline">ALL-TIME AWARD ARCHIVE</div>
+    <div class="loading-bar-wrap"><div class="loading-bar-inner" id="loadingBar"></div></div>
+  </div>
 </div>
 <header>
   <div class="header-inner">
@@ -336,7 +356,36 @@ const categories=[
 let lang='ko',currentView='year',filterYear='all',filterDiv='all',selectedCatId=null;
 let awardsData=[],siteConfig={};
 
+// ══════════ LOADING ANIMATION ══════════
+function runLoadingAnimation() {
+  const years = [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+  const flash = document.getElementById('loadingYearFlash');
+  const ci = document.getElementById('loadingCI');
+  const tagline = document.getElementById('loadingTagline');
+  const bar = document.getElementById('loadingBar');
+
+  let i = 0;
+  // 연도 플래시
+  const interval = setInterval(() => {
+    if(flash) flash.textContent = years[i % years.length];
+    i++;
+    if(i >= years.length) {
+      clearInterval(interval);
+      // CI 등장
+      setTimeout(() => {
+        if(flash) flash.style.transition = 'opacity .4s';
+        if(flash) flash.style.opacity = '0';
+        if(ci) ci.classList.add('show');
+        if(tagline) tagline.classList.add('show');
+        // 바 시작
+        setTimeout(() => { if(bar) bar.style.width = '100%'; }, 200);
+      }, 150);
+    }
+  }, 120);
+}
+
 async function loadAll(){
+  runLoadingAnimation();
   try{
     const[dataRes,cfgRes]=await Promise.all([
       fetch('data.json?t='+Date.now()),
@@ -350,7 +399,7 @@ async function loadAll(){
     }
     if(cfgRes.ok){siteConfig=await cfgRes.json();applyConfig();}
   }catch(e){awardsData=[];}
-  setTimeout(()=>document.getElementById('loadingScreen').classList.add('hidden'),800);
+  setTimeout(()=>document.getElementById('loadingScreen').classList.add('hidden'),2800);
   renderStats();renderYearNav();renderMain();
 }
 
