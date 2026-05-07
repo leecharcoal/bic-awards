@@ -9,7 +9,7 @@
 <meta property="og:title" content="BIC Awards Archive">
 <meta property="og:description" content="부산 인디 커넥트 페스티벌 역대 수상작 아카이브">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Oswald:wght@400;700&family=Anton&family=Barlow+Condensed:wght@400;700&family=Playfair+Display:wght@400;700&family=Nanum+Gothic:wght@400;700&family=Nanum+Myeongjo&family=IBM+Plex+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#080810;--surface:#10101c;--surface2:#18182a;--surface3:#20203a;
@@ -273,7 +273,7 @@ footer a{color:var(--accent);text-decoration:none;}
   <div class="search-bar-inner">
     <span class="search-icon">🔍</span>
     <input class="search-input" id="searchInput"
-      placeholder="게임명, 개발사, 국가 검색... / Search games, studios, countries..."
+      placeholder="게임명, 개발사, 국가 검색..."
       oninput="handleSearch(this.value)">
     <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
@@ -294,7 +294,7 @@ footer a{color:var(--accent);text-decoration:none;}
 <div class="year-nav" id="yearNavBar"><div class="year-nav-inner" id="yearNav"></div></div>
 <div class="division-filter" id="divisionBar">
   <div class="division-filter-inner">
-    <span class="div-label">경쟁부문 / Division</span>
+    <span class="div-label" id="divLabel">경쟁부문</span>
     <button class="div-btn active" id="divAll" onclick="setDiv('all')"><span data-ko="전체" data-en="All">전체</span></button>
     <button class="div-btn" id="divGeneral" onclick="setDiv('general')"><span data-ko="일반부문" data-en="General">일반부문</span></button>
     <button class="div-btn" id="divRookie" onclick="setDiv('rookie')"><span data-ko="루키부문" data-en="Rookie">루키부문</span></button>
@@ -362,6 +362,7 @@ function applyConfig(){
   if(s.bgColor)     {r.setProperty('--bg',s.bgColor);document.body.style.background=s.bgColor;}
   if(s.displayFont) r.setProperty('--font-display',s.displayFont);
   if(s.bodyFont)    {r.setProperty('--font-body',s.bodyFont);document.body.style.fontFamily=s.bodyFont;}
+  if(s.fontSize)    {document.body.style.fontSize=s.fontSize+'px';}
   if(s.eyebrow)  document.getElementById('hdrEyebrow').textContent=s.eyebrow;
   if(s.subtitle) document.getElementById('hdrSubtitle').textContent=s.subtitle;
   if(s.bicColor) {
@@ -418,6 +419,12 @@ function setLang(l){
   document.getElementById('btnKo').classList.toggle('active',l==='ko');
   document.getElementById('btnEn').classList.toggle('active',l==='en');
   document.querySelectorAll('[data-ko]').forEach(el=>el.textContent=l==='ko'?el.dataset.ko:el.dataset.en);
+  // 검색창 placeholder
+  const si = document.getElementById('searchInput');
+  if(si) si.placeholder = l==='ko' ? '게임명, 개발사, 국가 검색...' : 'Search games, studios, countries...';
+  // 경쟁부문 라벨
+  const dl = document.getElementById('divLabel');
+  if(dl) dl.textContent = l==='ko' ? '경쟁부문' : 'DIVISION';
   renderStats();renderYearNav();renderMain();
 }
 function renderStats(){
