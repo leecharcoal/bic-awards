@@ -9,7 +9,19 @@
 <meta property="og:title" content="BIC Awards Archive">
 <meta property="og:description" content="부산 인디 커넥트 페스티벌 역대 수상작 아카이브">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Oswald:wght@400;700&family=Anton&family=Barlow+Condensed:wght@400;700&family=Playfair+Display:wght@400;700&family=Nanum+Gothic:wght@400;700&family=Nanum+Myeongjo&family=IBM+Plex+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Oswald:wght@400;700&family=Anton&family=Barlow+Condensed:wght@400;700&family=Playfair+Display:wght@400;700&family=Nanum+Gothic:wght@400;700&family=Nanum+Myeongjo&family=IBM+Plex+Sans+KR:wght@300;400;700&family=Fjalla+One&display=swap" rel="stylesheet">
+<style>
+/* SUIT 폰트 */
+@font-face { font-family:'SUIT'; src:url('SUIT-Thin.otf') format('opentype'); font-weight:100; }
+@font-face { font-family:'SUIT'; src:url('SUIT-ExtraLight.otf') format('opentype'); font-weight:200; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Light.otf') format('opentype'); font-weight:300; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Regular.otf') format('opentype'); font-weight:400; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Medium.otf') format('opentype'); font-weight:500; }
+@font-face { font-family:'SUIT'; src:url('SUIT-SemiBold.otf') format('opentype'); font-weight:600; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Bold.otf') format('opentype'); font-weight:700; }
+@font-face { font-family:'SUIT'; src:url('SUIT-ExtraBold.otf') format('opentype'); font-weight:800; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Heavy.otf') format('opentype'); font-weight:900; }
+</style>
 <style>
 :root{
   --bg:#080810;--surface:#10101c;--surface2:#18182a;--surface3:#20203a;
@@ -28,14 +40,17 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .bg-image{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;background-repeat:no-repeat;pointer-events:none;}
 .bg-overlay{position:fixed;inset:0;z-index:1;pointer-events:none;}
 header,.stats-bar,.view-toggle-bar,.year-nav,.division-filter,.sponsors-bar,main,footer{position:relative;z-index:2;}
-.loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:8000;transition:opacity .5s;}
+.loading-screen{position:fixed;inset:0;background:rgb(250,240,5);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:8000;transition:opacity .8s ease;}
 .loading-screen.hidden{opacity:0;pointer-events:none;}
-.loading-logo{font-family:var(--font-display);font-size:80px;color:var(--accent);letter-spacing:4px;line-height:1;margin-bottom:24px;}
-.loading-logo span{color:var(--text);}
-.loading-bar-wrap{width:200px;height:2px;background:var(--border);border-radius:2px;overflow:hidden;}
-.loading-bar{height:100%;background:var(--accent);border-radius:2px;animation:loadBar 1.5s ease forwards;}
-@keyframes loadBar{from{width:0}to{width:100%}}
-.loading-text{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);margin-top:14px;letter-spacing:3px;}
+.loading-year-flash{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Fjalla One','Bebas Neue',sans-serif;font-size:220px;color:rgba(0,0,0,0.07);letter-spacing:-5px;pointer-events:none;user-select:none;font-weight:900;}
+.loading-center{display:flex;flex-direction:column;align-items:center;gap:28px;position:relative;z-index:2;}
+.loading-ci{opacity:0;transform:scale(.85);filter:blur(8px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1),filter .7s ease;}
+.loading-ci.show{opacity:1;transform:scale(1);filter:blur(0);}
+.loading-ci img{width:260px;height:auto;object-fit:contain;}
+.loading-tagline{font-family:'Fjalla One','Bebas Neue',sans-serif;font-size:11px;color:rgba(0,0,0,0);letter-spacing:8px;text-transform:uppercase;transition:color .6s .4s;}
+.loading-tagline.show{color:rgba(0,0,0,0.45);}
+.loading-bar-wrap{width:200px;height:2px;background:rgba(0,0,0,.15);border-radius:1px;overflow:hidden;}
+.loading-bar-inner{height:100%;width:0;background:#000;transition:width 2s cubic-bezier(.4,0,.2,1);}
 header{padding:56px 48px 36px;border-bottom:1px solid var(--border);overflow:hidden;}
 header::before{content:'AWARDS';position:absolute;right:-10px;top:-20px;font-family:var(--font-display);font-size:240px;line-height:1;color:rgba(255,45,85,0.04);pointer-events:none;user-select:none;letter-spacing:-5px;}
 .header-inner{max-width:1280px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;}
@@ -136,7 +151,8 @@ main{max-width:1280px;margin:0 auto;padding:40px 48px 80px;}
 .award-card.rising-star .award-game{color:var(--rising);font-size:16px;font-weight:800;}
 .award-card.jury-prize .award-game{color:var(--jury);font-size:16px;font-weight:800;}
 .award-studio{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.country-badge{padding:1px 7px;background:var(--surface3);border:1px solid var(--border);border-radius:2px;font-size:10px;letter-spacing:1px;}
+.country-badge{padding:2px 8px;background:var(--surface3);border:1px solid var(--border);border-radius:4px;font-size:13px;letter-spacing:1px;display:inline-flex;align-items:center;gap:4px;}
+.country-code{font-size:10px;opacity:.7;}
 .award-desc{font-size:13px;color:var(--text-muted);line-height:1.6;padding-top:8px;border-top:1px solid var(--border);margin-top:auto;}
 .steam-link-text,.market-link-text{display:inline-flex;align-items:center;gap:4px;margin-top:6px;margin-right:8px;font-family:var(--font-mono);font-size:10px;color:#66c0f4;text-decoration:none;letter-spacing:1px;transition:opacity .2s;}
 .steam-link-text:hover,.market-link-text:hover{opacity:.7;}
@@ -235,9 +251,14 @@ footer a{color:var(--accent);text-decoration:none;}
 <div class="bg-image" id="bgImage"></div>
 <div class="bg-overlay" id="bgOverlay"></div>
 <div class="loading-screen" id="loadingScreen">
-  <div class="loading-logo">BIC <span>AWARDS</span></div>
-  <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
-  <div class="loading-text">LOADING ARCHIVE...</div>
+  <div class="loading-year-flash" id="loadingYearFlash">2015</div>
+  <div class="loading-center">
+    <div class="loading-ci" id="loadingCI">
+      <img src="BIC_CI.png" alt="BIC">
+    </div>
+    <div class="loading-tagline" id="loadingTagline">ALL-TIME AWARD ARCHIVE</div>
+    <div class="loading-bar-wrap"><div class="loading-bar-inner" id="loadingBar"></div></div>
+  </div>
 </div>
 <header>
   <div class="header-inner">
@@ -335,7 +356,36 @@ const categories=[
 let lang='ko',currentView='year',filterYear='all',filterDiv='all',selectedCatId=null;
 let awardsData=[],siteConfig={};
 
+// ══════════ LOADING ANIMATION ══════════
+function runLoadingAnimation() {
+  const years = [2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+  const flash = document.getElementById('loadingYearFlash');
+  const ci = document.getElementById('loadingCI');
+  const tagline = document.getElementById('loadingTagline');
+  const bar = document.getElementById('loadingBar');
+
+  let i = 0;
+  // 연도 플래시
+  const interval = setInterval(() => {
+    if(flash) flash.textContent = years[i % years.length];
+    i++;
+    if(i >= years.length) {
+      clearInterval(interval);
+      // CI 등장
+      setTimeout(() => {
+        if(flash) flash.style.transition = 'opacity .4s';
+        if(flash) flash.style.opacity = '0';
+        if(ci) ci.classList.add('show');
+        if(tagline) tagline.classList.add('show');
+        // 바 시작
+        setTimeout(() => { if(bar) bar.style.width = '100%'; }, 200);
+      }, 150);
+    }
+  }, 120);
+}
+
 async function loadAll(){
+  runLoadingAnimation();
   try{
     const[dataRes,cfgRes]=await Promise.all([
       fetch('data.json?t='+Date.now()),
@@ -349,7 +399,7 @@ async function loadAll(){
     }
     if(cfgRes.ok){siteConfig=await cfgRes.json();applyConfig();}
   }catch(e){awardsData=[];}
-  setTimeout(()=>document.getElementById('loadingScreen').classList.add('hidden'),800);
+  setTimeout(()=>document.getElementById('loadingScreen').classList.add('hidden'),2800);
   renderStats();renderYearNav();renderMain();
 }
 
@@ -511,6 +561,34 @@ function renderYearView(){
     else awards.forEach(a=>grid.appendChild(buildCard(a)));
   });
 }
+// ══════════ 국가 유틸 ══════════
+function countryFlag(code) {
+  if(!code) return '';
+  // 2자리 ISO 코드 → 국기 이모지
+  const upper = code.toUpperCase().trim();
+  if(upper.length !== 2) return '';
+  return String.fromCodePoint(
+    upper.charCodeAt(0) + 127397,
+    upper.charCodeAt(1) + 127397
+  );
+}
+
+// 한글 국가명 검색 매핑
+const COUNTRY_KO_MAP = {
+  'KR': '한국 대한민국', 'US': '미국', 'JP': '일본', 'CN': '중국',
+  'GB': '영국', 'FR': '프랑스', 'DE': '독일', 'AU': '호주',
+  'CA': '캐나다', 'TW': '대만', 'HK': '홍콩', 'SG': '싱가포르',
+  'TH': '태국', 'VN': '베트남', 'MY': '말레이시아', 'ID': '인도네시아',
+  'PH': '필리핀', 'IN': '인도', 'RU': '러시아', 'PL': '폴란드',
+  'ES': '스페인', 'IT': '이탈리아', 'NL': '네덜란드', 'SE': '스웨덴',
+  'NO': '노르웨이', 'DK': '덴마크', 'FI': '핀란드', 'CH': '스위스',
+  'AT': '오스트리아', 'BE': '벨기에', 'PT': '포르투갈', 'CZ': '체코',
+  'RO': '루마니아', 'HU': '헝가리', 'BR': '브라질', 'AR': '아르헨티나',
+  'MX': '멕시코', 'CL': '칠레', 'ZA': '남아프리카', 'NZ': '뉴질랜드',
+  'IL': '이스라엘', 'TR': '터키', 'UA': '우크라이나', 'GR': '그리스',
+  'HR': '크로아티아', 'SK': '슬로바키아', 'RS': '세르비아',
+};
+
 const steamSvg=`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.527h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.606 0 11.979 0z"/></svg>`;
 
 function detectMarket(url) {
@@ -604,7 +682,7 @@ function buildCard(a){
         ${divBadge}
       </div>
       <div class="award-game">${lang==='ko'?a.gameKo:a.gameEn}</div>
-      <div class="award-studio">${a.studio||a.studioEn||''}${a.country?`<span class="country-badge">${a.country}</span>`:''}</div>
+      <div class="award-studio">${a.studio||a.studioEn||''}${a.country?`<span class="country-badge">${countryFlag(a.country)}<span class="country-code">${a.country}</span></span>`:''}</div>
       ${(lang==='ko'?a.descKo:a.descEn)?`<div class="award-desc">${lang==='ko'?a.descKo:a.descEn}</div>`:''}
       ${buildMarketLinks(a.steam, a.market)}
     </div>`;
@@ -704,9 +782,10 @@ function updateSearchInfo() {
 function matchSearchOnly(a) {
   if(!searchQuery) return true;
   const q = searchQuery;
+  const countryKo = COUNTRY_KO_MAP[a.country?.toUpperCase()] || '';
   const fields = [
     a.gameKo, a.gameEn, a.studio, a.studioEn,
-    a.country, a.catKo,
+    a.country, a.catKo, countryKo,
     categories.find(c=>c.id===a.catId)?.nameKo || '',
     categories.find(c=>c.id===a.catId)?.nameEn || '',
   ];
