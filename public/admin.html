@@ -368,6 +368,18 @@ input[type="color"]{width:36px;height:36px;border:1px solid var(--border);border
       <div class="page-desc">연도별 스폰서 및 파트너 로고를 관리합니다</div>
       <div class="section">
         <div class="section-title">스폰서 목록</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:12px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);">
+          <div>
+            <div style="font-family:var(--font-mono);font-size:11px;color:var(--text);letter-spacing:1px;">스폰서 바 노출</div>
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:1px;">사이트 상단 스폰서 로고 영역 표시 여부</div>
+          </div>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;">
+            <input type="checkbox" id="cfg_sponsorsVisible" style="opacity:0;width:0;height:0;" onchange="updateToggleStyle(this)">
+            <span id="cfg_sponsorsToggle" style="position:absolute;inset:0;background:var(--border);border-radius:24px;transition:all .3s;">
+              <span style="position:absolute;left:3px;top:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:all .3s;display:block;" id="cfg_sponsorsKnob"></span>
+            </span>
+          </label>
+        </div>
         <div class="sponsor-list" id="sponsorList"></div>
         <button class="add-sponsor-btn" onclick="addSponsor()">＋ 스폰서 추가</button>
       </div>
@@ -450,6 +462,9 @@ function populateForm() {
   document.getElementById('sw_bicColor').style.background = bicCol;
   document.getElementById('cfg_subtitle').value       = s.subtitle || '';
   document.getElementById('cfg_sponsorsLabel').value  = s.sponsorsLabel || '';
+  const sv = document.getElementById('cfg_sponsorsVisible');
+  sv.checked = s.sponsorsVisible !== false; // 기본값 true
+  updateToggleStyle(sv);
   const st = s.stats || [];
   for(let i=0; i<4; i++){
     const n = i+1;
@@ -670,13 +685,27 @@ function handleSponsorLogo(event) {
   event.target.value = '';
 }
 
+function updateToggleStyle(checkbox) {
+  const track = document.getElementById('cfg_sponsorsToggle');
+  const knob  = document.getElementById('cfg_sponsorsKnob');
+  if(!track || !knob) return;
+  if(checkbox.checked) {
+    track.style.background = 'var(--accent)';
+    knob.style.transform = 'translateX(20px)';
+  } else {
+    track.style.background = 'var(--border)';
+    knob.style.transform = 'translateX(0)';
+  }
+}
+
 // ══════════════ COLLECT & SAVE ══════════════
 function collectForm() {
   if(!config.site) config.site = {};
   config.site.eyebrow        = document.getElementById('cfg_eyebrow').value;
   config.site.bicColor       = document.getElementById('tc_bicColor').value;
   config.site.subtitle       = document.getElementById('cfg_subtitle').value;
-  config.site.sponsorsLabel  = document.getElementById('cfg_sponsorsLabel').value;
+  config.site.sponsorsLabel   = document.getElementById('cfg_sponsorsLabel').value;
+  config.site.sponsorsVisible = document.getElementById('cfg_sponsorsVisible').checked;
   config.site.stats = [
     { val: document.getElementById('cfg_stat1val').value, labelKo: document.getElementById('cfg_stat1labelKo').value, labelEn: document.getElementById('cfg_stat1labelEn').value },
     { val: document.getElementById('cfg_stat2val').value, labelKo: document.getElementById('cfg_stat2labelKo').value, labelEn: document.getElementById('cfg_stat2labelEn').value },
