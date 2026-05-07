@@ -454,7 +454,8 @@ function applyConfig(){
   if(sponsorsLabel && s.sponsorsLabel) sponsorsLabel.textContent = s.sponsorsLabel;
 
   const sponsors=(siteConfig.sponsors||[]).filter(sp=>sp.logo&&sp.name);
-  if(sponsors.length){
+  const sponsorsVisible = siteConfig.site?.sponsorsVisible !== false;
+  if(sponsors.length && sponsorsVisible){
     document.getElementById('sponsorsBar').style.display='block';
     document.getElementById('sponsorLogoWrap').innerHTML=sponsors.map(sp=>
       sp.url
