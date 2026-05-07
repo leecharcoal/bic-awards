@@ -34,7 +34,8 @@
       }
     ],
     "bicColor": "#faf005",
-    "fontSize": 22
+    "fontSize": 22,
+    "sponsorsVisible": false
   },
   "categories": {
     "grand-prix": {
