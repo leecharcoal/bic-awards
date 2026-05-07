@@ -30,7 +30,7 @@
   --grand:#ffd700;--rising:#00e5ff;--jury:#c084fc;
   --font-display:'Bebas Neue','Black Han Sans',sans-serif;
   --font-body:'Noto Sans KR',sans-serif;
-  --font-mono:'Space Mono',monospace;
+  --font-mono:'SUIT','Noto Sans KR',sans-serif;
   --radius:6px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -421,6 +421,7 @@ function applyConfig(){
   }
   if(s.bodyFont) {
     r.setProperty('--font-body', s.bodyFont);
+    r.setProperty('--font-mono', s.bodyFont);
     document.body.style.fontFamily = s.bodyFont;
   }
   if(s.fontSize) {
