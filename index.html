@@ -731,7 +731,7 @@ function renderCategoryView(){
       const card=document.createElement('div');
       card.className='cat-card';
       card.style.setProperty('--cat-color',cat.color);
-      const emblemInner=cat.emblemImg?`<img src="${cat.emblemImg}" alt="${cat.nameKo}">`:`${cat.emoji}`;
+      const emblemInner=(cat.emblemImg||cat.emblemImgRookie)?`<img src="${cat.emblemImg||cat.emblemImgRookie}" alt="${cat.nameKo}">`:`${cat.emoji}`;
       card.innerHTML=`
         <div class="cat-emblem">${emblemInner}</div>
         <div><div class="cat-name">${lang==='ko'?cat.nameKo:cat.nameEn}</div><div class="cat-name-en">${cat.nameEn}</div></div>
