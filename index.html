@@ -748,7 +748,7 @@ function renderCatDetailView(){
   const cat=categories.find(c=>c.id===selectedCatId);
   if(!cat){setView('category');return;}
   const allAwards=awardsData.filter(a=>a.catId===selectedCatId&&matchSearchOnly(a)).sort((a,b)=>b.year-a.year);
-  const emblemInner=cat.emblemImg?`<img src="${cat.emblemImg}" alt="${cat.nameKo}">`:`${cat.emoji}`;
+  const emblemInner=(cat.emblemImg||cat.emblemImgRookie)?`<img src="${cat.emblemImg||cat.emblemImgRookie}" alt="${cat.nameKo}">`:`${cat.emoji}`;
   const hdr=document.createElement('div');
   hdr.className='cat-detail-header';
   hdr.innerHTML=`
