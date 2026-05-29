@@ -444,7 +444,7 @@ function applyConfig(){
     document.getElementById('bgOverlay').style.background=`rgba(0,0,0,${s.bgOverlay??0.6})`;
   }
   // 엠블럼 — config.json 우선, 없으면 GitHub 파일명 자동 매핑
-  const BASE = 'https://leecharcoal.github.io/bic-awards/';
+  const BASE = window.location.origin + '/bic-awards/';
   const EMBLEM_MAP = {
     'grand-prix':   { general: 'grand-prix.png',    rookie: 'grand-prix-rookie.png' },
     'jury-general': { general: 'jury-general.png',  rookie: 'jury-general.png' },
