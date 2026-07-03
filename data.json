@@ -405,8 +405,8 @@
       "gameEn": "With My Past",
       "year": 2024,
       "division": "rookie",
-      "catId": "",
-      "catKo": "심사위원상",
+      "catId": "jury-rookie",
+      "catKo": "심사위원상(루키)",
       "type": "jury-prize",
       "studio": "Imagine Wings Studio",
       "studioEn": "이매진 윙스 스튜디오",
@@ -2908,5 +2908,5 @@
       "market": ""
     }
   ],
-  "updatedAt": "2026-07-03T03:21:32.744Z"
+  "updatedAt": "2026-07-03T04:40:39.090Z"
 }
