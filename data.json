@@ -1317,8 +1317,8 @@
       "gameEn": "Wrestledunk Sports",
       "year": 2022,
       "division": "general",
-      "catId": "",
-      "catKo": "대전",
+      "catId": "esports",
+      "catKo": "이스포츠",
       "type": "",
       "studio": "Team Fractal Alligator",
       "studioEn": "Team Fractal Alligator",
@@ -2908,5 +2908,5 @@
       "market": ""
     }
   ],
-  "updatedAt": "2026-07-03T04:40:39.090Z"
+  "updatedAt": "2026-07-03T04:43:02.031Z"
 }
