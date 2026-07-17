@@ -12,15 +12,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Oswald:wght@400;700&family=Anton&family=Barlow+Condensed:wght@400;700&family=Playfair+Display:wght@400;700&family=Nanum+Gothic:wght@400;700&family=Nanum+Myeongjo&family=IBM+Plex+Sans+KR:wght@300;400;700&family=Fjalla+One&display=swap" rel="stylesheet">
 <style>
 /* SUIT 폰트 */
-@font-face { font-family:'SUIT'; src:url('SUIT-Thin.otf') format('opentype'); font-weight:100; }
-@font-face { font-family:'SUIT'; src:url('SUIT-ExtraLight.otf') format('opentype'); font-weight:200; }
-@font-face { font-family:'SUIT'; src:url('SUIT-Light.otf') format('opentype'); font-weight:300; }
-@font-face { font-family:'SUIT'; src:url('SUIT-Regular.otf') format('opentype'); font-weight:400; }
-@font-face { font-family:'SUIT'; src:url('SUIT-Medium.otf') format('opentype'); font-weight:500; }
-@font-face { font-family:'SUIT'; src:url('SUIT-SemiBold.otf') format('opentype'); font-weight:600; }
-@font-face { font-family:'SUIT'; src:url('SUIT-Bold.otf') format('opentype'); font-weight:700; }
-@font-face { font-family:'SUIT'; src:url('SUIT-ExtraBold.otf') format('opentype'); font-weight:800; }
-@font-face { font-family:'SUIT'; src:url('SUIT-Heavy.otf') format('opentype'); font-weight:900; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Thin.woff2') format('woff2'); font-weight:100; font-display:swap; }
+@font-face { font-family:'SUIT'; src:url('SUIT-ExtraLight.woff2') format('woff2'); font-weight:200; font-display:swap; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Light.woff2') format('woff2'); font-weight:300; font-display:swap; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Regular.woff2') format('woff2'); font-weight:400; font-display:swap; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Medium.woff2') format('woff2'); font-weight:500; font-display:swap; }
+@font-face { font-family:'SUIT'; src:url('SUIT-SemiBold.woff2') format('woff2'); font-weight:600; font-display:swap; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Bold.woff2') format('woff2'); font-weight:700; font-display:swap; }
+@font-face { font-family:'SUIT'; src:url('SUIT-ExtraBold.woff2') format('woff2'); font-weight:800; font-display:swap; }
+@font-face { font-family:'SUIT'; src:url('SUIT-Heavy.woff2') format('woff2'); font-weight:900; font-display:swap; }
 </style>
 <style>
 :root{
@@ -1019,8 +1019,10 @@ function launchConfetti(){
   if(!canvas) return;
   const ctx=canvas.getContext('2d');
   canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const isMobile=window.innerWidth<=768;
   const colors=['#ff2d55','#ffd000','#00e5ff','#c084fc','#4ade80','#f97316','#ffffff','#ff6b9d','#fbbf24','#34d399'];
-  const pieces=Array.from({length:150},()=>({
+  const pieceCount=isMobile?60:150;
+  const pieces=Array.from({length:pieceCount},()=>({
     x:Math.random()*canvas.width,y:-Math.random()*canvas.height*.5,
     w:Math.random()*10+5,h:Math.random()*5+3,
     color:colors[Math.floor(Math.random()*colors.length)],
@@ -1043,10 +1045,15 @@ function launchConfetti(){
       if(p.y>canvas.height+20&&frame<maxFrames*.5){p.y=-20;p.x=Math.random()*canvas.width;p.opacity=1;}
     });
     if(frame<maxFrames) requestAnimationFrame(draw);
-    else ctx.clearRect(0,0,canvas.width,canvas.height);
+    else {ctx.clearRect(0,0,canvas.width,canvas.height);window.removeEventListener('resize',onResize);}
   }
   draw();
-  window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;});
+  let resizeTimer=null;
+  function onResize(){
+    if(resizeTimer) return;
+    resizeTimer=setTimeout(()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;resizeTimer=null;},isMobile?300:100);
+  }
+  window.addEventListener('resize',onResize,{passive:true});
 }
 loadAll();
 </script>
