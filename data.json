@@ -1037,7 +1037,7 @@
       "type": "",
       "studio": "Sad Owl Studios",
       "studioEn": "Sad Owl Studios",
-      "country": "KR",
+      "country": "NO, US, ES, GB, ID, FI, PH",
       "descKo": "",
       "descEn": "",
       "img": "https://bicfest.org/up/showroom/188161b66a4a1ece372a4f4c7dbd5d9c1684152175.png",
@@ -2139,7 +2139,7 @@
       "type": "",
       "studio": "Reverie Forge",
       "studioEn": "Reverie Forge",
-      "country": "FR",
+      "country": "NO, US, ES, GB, ID, FI, PH",
       "descKo": "Aurore is a contemplative adventure-puzzle game.",
       "descEn": "Aurore is a contemplative adventure-puzzle game in third person point of view. ",
       "img": "https://bicfest.org/up/showroom/1c02d4b2c32ab75c4828e09a914bd1651601995344.png",
@@ -2908,5 +2908,5 @@
       "market": ""
     }
   ],
-  "updatedAt": "2026-07-19T05:24:44.374Z"
+  "updatedAt": "2026-07-19T08:03:50.765Z"
 }
